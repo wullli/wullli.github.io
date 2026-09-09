@@ -81,20 +81,7 @@
   <div class="paper">
   <header class="site-nav">
     <div class="container">
-      <span class="brand-text">
-        <a href="index.html" class="brand-name"><strong>Pascal</strong> Wullschleger<sup>1,2</sup></a>
-        <span class="nav-icons">
-          <a href="https://www.linkedin.com/in/pascal-wullschleger-a20a35167/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg width="14" height="14"><use href="#ic-linkedin"/></svg></a>
-          <a href="https://scholar.google.com/citations?user=qDE_SUkAAAAJ&hl=en" target="_blank" rel="noopener" aria-label="Google Scholar" title="Google Scholar"><svg width="14" height="14"><use href="#ic-scholar"/></svg></a>
-          <a href="https://orcid.org/0009-0000-6174-6445" target="_blank" rel="noopener" aria-label="ORCID" title="ORCID"><svg width="14" height="14"><use href="#ic-orcid"/></svg></a>
-          <a href="https://aclanthology.org/people/pascal-wullschleger/" target="_blank" rel="noopener" aria-label="ACL Anthology" title="ACL Anthology"><svg width="14" height="14"><use href="#ic-acl"/></svg></a>
-          <a href="https://github.com/wullli" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg width="14" height="14"><use href="#ic-github"/></svg></a>
-        </span>
-        <span class="brand-affiliations">
-          <sup>1</sup> <a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">Hamilton Institute, Maynooth University</a><br>
-          <sup>2</sup> <a href="https://www.hslu.ch/en/lucerne-school-of-computer-science-and-information-technology/" target="_blank" rel="noopener">Lucerne School of Computer Science and IT, HSLU</a>
-        </span>
-      </span>
+      <span class="brand-name"><a href="index.html" class="brand-name-link"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-computer-science-and-information-technology/" target="_blank" rel="noopener">2</a></sup></span>
       <a href="index.html" class="nav-avatar"><img src="images/me.jpeg" alt="Pascal Wullschleger"></a>
       <nav aria-label="Site navigation">
         <ul class="nav-links">
@@ -105,6 +92,17 @@
         </ul>
         <button id="theme-btn" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Switch to dark mode">●</button>
       </nav>
+      <span class="brand-affiliations">
+        <sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University<br>
+        <sup><a href="https://www.hslu.ch/en/lucerne-school-of-computer-science-and-information-technology/" target="_blank" rel="noopener">2</a></sup> Lucerne School of Computer Science and IT, HSLU
+      </span>
+      <span class="nav-icons">
+        <a href="https://www.linkedin.com/in/pascal-wullschleger-a20a35167/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg width="14" height="14"><use href="#ic-linkedin"/></svg></a>
+        <a href="https://scholar.google.com/citations?user=qDE_SUkAAAAJ&hl=en" target="_blank" rel="noopener" aria-label="Google Scholar" title="Google Scholar"><svg width="14" height="14"><use href="#ic-scholar"/></svg></a>
+        <a href="https://orcid.org/0009-0000-6174-6445" target="_blank" rel="noopener" aria-label="ORCID" title="ORCID"><svg width="14" height="14"><use href="#ic-orcid"/></svg></a>
+        <a href="https://aclanthology.org/people/pascal-wullschleger/" target="_blank" rel="noopener" aria-label="ACL Anthology" title="ACL Anthology"><svg width="14" height="14"><use href="#ic-acl"/></svg></a>
+        <a href="https://github.com/wullli" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg width="14" height="14"><use href="#ic-github"/></svg></a>
+      </span>
     </div>
   </header>
 
@@ -125,7 +123,10 @@
       <!--   problems that bridge computer vision and environmental sensing. -->
       <!-- </p> -->
 
-      <h2>Recent Publications</h2>
+      <div class="recent-pubs-header">
+        <h2>Recent Publications</h2>
+        <a href="publications.html" class="more-link" id="more-link">All publications &rarr;</a>
+      </div>
       <div id="recent-pubs"><!-- PUBS_RECENT_START --><div class="pub-entry">
   <span class="pub-num">[1]</span>
   <div class="pub-body">
@@ -195,7 +196,6 @@
 }</pre></div>
   </div>
 </div><!-- PUBS_RECENT_END --></div>
-      <a href="publications.html" class="more-link" id="more-link">All publications &rarr;</a>
 
       <h2>Research Interests</h2>
       <p class="interests">
