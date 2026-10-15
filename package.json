@@ -1,0 +1,14 @@
+{
+  "name": "wullli.github.io",
+  "private": true,
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "highlight.js": "^11.12.0",
+    "katex": "^0.18.10",
+    "marked": "18.0.13",
+    "marked-highlight": "^2.2.4",
+    "marked-katex-extension": "^5.1.13"
+  }
+}
