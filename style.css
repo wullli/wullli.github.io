@@ -744,10 +744,6 @@ footer a:visited { color: var(--fg-muted); }
   transform: scale(1.25);
 }
 
-.accent-dot.active::before {
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--dot-color);
-}
-
 .theme-toggle:focus-visible::before,
 .accent-dot:focus-visible::before {
   box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent);
