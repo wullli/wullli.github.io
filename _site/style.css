@@ -141,7 +141,6 @@ p:last-child { margin-bottom: 0; }
 .header-settings {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
 }
 
 .site-nav .container {
