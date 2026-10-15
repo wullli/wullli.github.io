@@ -57,6 +57,9 @@ function syncToggleBtn() {
 document.addEventListener('DOMContentLoaded', function () {
   syncToggleBtn();
 
+  var host = document.querySelector('.header-settings');
+  if (!host) return;
+
   var picker = document.createElement('div');
   picker.className = 'accent-picker';
   picker.setAttribute('role', 'group');
@@ -74,5 +77,5 @@ document.addEventListener('DOMContentLoaded', function () {
     picker.appendChild(dot);
   });
 
-  document.body.appendChild(picker);
+  host.appendChild(picker);
 });
