@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Code+Pro:wght@400;500&display=fallback">
   <script src="theme.js"></script>
+  <script src="code.js" defer></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -58,11 +59,53 @@
 
   <main>
     <div class="container">
-      <h1>Blog</h1>
-
-      <p class="blog-intro">
-        Notes on research, methods, and things worth writing down. Posts forthcoming.
-      </p>
+      <!-- POSTS_START -->      <div class="blog-layout">
+        <aside class="post-index" aria-label="All posts">
+          <h2>All posts</h2>
+          <ul>
+            <li class="current">
+              <a href="posts/pyro.html" aria-current="page">Probabilistic Programming with Pyro</a> <span class="series-badge">4 parts</span> <span class="draft-badge">Draft</span>
+              <time class="post-date" datetime="2026-10-13">13 October 2026</time>
+            </li>
+            <li>
+              <a href="posts/pyro_ppl.html">A brief introduction to Probabilistic Programming in Pyro</a> <span class="draft-badge">Draft</span>
+              <time class="post-date" datetime="2026-10-13">13 October 2026</time>
+            </li>
+          </ul>
+        </aside>
+        <article class="post post-featured">
+          <p class="series-kicker">Series <span class="series-badge">4 parts</span></p>
+          <time class="post-date" datetime="2026-10-13">13 October 2026</time>
+          <h2 class="post-title"><a href="posts/pyro.html">Probabilistic Programming with Pyro</a> <span class="draft-badge">Draft</span></h2>
+          <div class="blog-tags"><span class="blog-tag">stats</span><span class="blog-tag">svi</span><span class="blog-tag">probabilities</span><span class="blog-tag">pyro</span></div>
+<div class="post-body">
+<p>A series on learning Pyro by building things with it: first the core ideas of
+probabilistic programming and inference, then unsupervised item-response models
+for label inference.</p>
+</div>
+<h2 class="series-heading">Chapters</h2>
+<ol class="series-chapters series-chapters-full">
+  <li>
+    <a href="posts/pyro/01-ppl-basics.html">A brief introduction to Probabilistic Programming in Pyro</a> <span class="draft-badge">Draft</span>
+    <p class="series-summary">This article is intended as my way to learn pyro, though it may be useful for someone else.</p>
+  </li>
+  <li>
+    <a href="posts/pyro/02-svi.html">Stochastic Variational Inference and the Evidence Lower Bound</a> <span class="draft-badge">Draft</span>
+    <p class="series-summary">This article is intended as my way to learn pyro, though it may be useful for someone else.</p>
+  </li>
+  <li>
+    <a href="posts/pyro/03-pyro-fundamentals.html">The Fundamentals of Pyro</a> <span class="draft-badge">Draft</span>
+    <p class="series-summary">This article is intended as my way to learn pyro, though it may be useful for someone else.</p>
+  </li>
+  <li>
+    <a href="posts/pyro/04-unsupervised-irt.html">Modelling Unsupervised Item-Response Models with Pyro</a> <span class="draft-badge">Draft</span>
+    <p class="series-summary">This article describes the basic implementation process of unsupervised IRT-models for label-inference.</p>
+  </li>
+</ol>
+<p class="series-actions"><a href="posts/pyro/01-ppl-basics.html">Start reading &rarr;</a> &middot; <a href="posts/pyro/all.html">Read the whole series on one page</a></p>
+        </article>
+      </div>
+      <!-- POSTS_END -->
 
     </div>
   </main>
