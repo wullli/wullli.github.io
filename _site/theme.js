@@ -50,12 +50,14 @@ function syncToggleBtn() {
   var btn = document.getElementById('theme-btn');
   if (!btn) return;
   var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  btn.textContent = '●';
   btn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
 }
 
 document.addEventListener('DOMContentLoaded', function () {
   syncToggleBtn();
+
+  var host = document.querySelector('.header-settings');
+  if (!host) return;
 
   var picker = document.createElement('div');
   picker.className = 'accent-picker';
@@ -74,5 +76,5 @@ document.addEventListener('DOMContentLoaded', function () {
     picker.appendChild(dot);
   });
 
-  document.body.appendChild(picker);
+  host.appendChild(picker);
 });
