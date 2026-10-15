@@ -756,10 +756,10 @@ footer a:visited { color: var(--fg-muted); }
   }
   .brand-name { order: 1; flex: 1; }
   .nav-avatar { order: 2; width: 56px; height: 56px; grid-row: auto; }
-  .site-nav nav { order: 3; width: 100%; justify-content: flex-end; }
+  .site-nav nav { order: 3; width: 100%; justify-content: flex-start; }
   .brand-affiliations { order: 4; width: 100%; }
-  .nav-icons { order: 5; width: 100%; justify-content: flex-end; justify-self: auto; }
-  .nav-links { gap: 1.1rem; }
+  .nav-icons { order: 5; width: 100%; justify-content: flex-start; justify-self: auto; }
+  .nav-links { gap: 1.1rem; justify-content: flex-start; }
   .cv-head { flex-direction: column; gap: 0.1rem; }
   .cv-hero { gap: 1rem; }
   .cv-avatar { width: 62px; height: 62px; }
