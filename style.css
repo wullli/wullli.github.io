@@ -768,6 +768,7 @@ footer .profile-links { gap: 1.1rem; }
 
 /* === Responsive === */
 @media (max-width: 839px) {
+  .site-nav { padding-top: calc(0.75rem + 10px); }
   .site-nav > .container {
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto 1fr;
