@@ -50,7 +50,6 @@ function syncToggleBtn() {
   var btn = document.getElementById('theme-btn');
   if (!btn) return;
   var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  btn.textContent = '●';
   btn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
 }
 

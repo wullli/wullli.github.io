@@ -128,7 +128,7 @@ p:last-child { margin-bottom: 0; }
 .header-rule {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.4rem;
   margin-top: 0.75rem;
 }
 .header-rule::before,
@@ -141,7 +141,7 @@ p:last-child { margin-bottom: 0; }
 .header-settings {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.4rem;
 }
 
 .site-nav .container {
@@ -273,25 +273,11 @@ p:last-child { margin-bottom: 0; }
 .nav-links a:visited { color: var(--fg); }
 .nav-links a.active:visited { color: var(--accent); }
 
-.nav-links a:focus-visible,
-.theme-toggle:focus-visible {
+.nav-links a:focus-visible {
   outline: 2px solid var(--link);
   outline-offset: 2px;
 }
 
-.theme-toggle {
-  font-size: 13px;
-  color: var(--fg);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-family: var(--font-body);
-  line-height: 1;
-  transition: color 0.12s;
-  vertical-align: baseline;
-}
-.theme-toggle:hover { opacity: 0.7; }
 
 /* === Main === */
 main { padding: 1.5rem 0 1rem; }
@@ -722,34 +708,48 @@ footer a:visited { color: var(--fg-muted); }
   padding-bottom: 0;
 }
 
-/* === Accent picker === */
+/* === Theme toggle and accent picker === */
 .accent-picker {
   display: flex;
-  gap: 7px;
 }
 
+.theme-toggle,
 .accent-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
   padding: 0;
+  border: none;
+  background: none;
   cursor: pointer;
-  background: var(--dot-color);
-  box-shadow: 0 0 0 1.5px transparent, 0 0 0 0 transparent;
-  transition: box-shadow 0.12s, transform 0.12s;
   outline: none;
 }
 
-.accent-dot:hover {
+.theme-toggle { --dot-color: var(--fg); }
+
+.theme-toggle::before,
+.accent-dot::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dot-color);
+  transition: box-shadow 0.12s, transform 0.12s;
+}
+
+.theme-toggle:hover::before,
+.accent-dot:hover::before {
   transform: scale(1.25);
 }
 
-.accent-dot.active {
+.accent-dot.active::before {
   box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--dot-color);
 }
 
-.accent-dot:focus-visible {
+.theme-toggle:focus-visible::before,
+.accent-dot:focus-visible::before {
   box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent);
 }
 
