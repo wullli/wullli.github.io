@@ -735,12 +735,7 @@ footer a:visited { color: var(--fg-muted); }
   height: 7px;
   border-radius: 50%;
   background: var(--dot-color);
-  transition: box-shadow 0.12s, transform 0.12s;
-}
-
-.theme-toggle:hover::before,
-.accent-dot:hover::before {
-  transform: scale(1.25);
+  transition: box-shadow 0.12s;
 }
 
 .theme-toggle:focus-visible::before,
