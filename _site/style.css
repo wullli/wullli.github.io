@@ -763,6 +763,7 @@ footer a:visited { color: var(--fg-muted); }
     --sz-base: 15px;
     --sz-xl:   24px;
   }
+  p, .pub-abstract { text-align: left; }
   .cv-head { flex-direction: column; gap: 0.1rem; }
   .cv-hero { gap: 1rem; }
   .cv-avatar { width: 62px; height: 62px; }
