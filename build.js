@@ -373,11 +373,10 @@ function renderBlogContent(posts) {
 // Post pages drop the name, affiliations and avatar from the header; they reappear
 // as an author card at the end of the post (before the AI statement, if any).
 function moveAuthorToPostEnd(html) {
+  // Same name/affiliation markup as the header, superscripts included
+  const nameSup = (html.match(/class="brand-name-link">[\s\S]*?<\/a>(<sup>[\s\S]*?<\/sup>)/) || [, ''])[1];
   const aff = html.match(/<span class="brand-affiliations">([\s\S]*?)<\/span>/);
-  const affiliations = aff
-    ? [...aff[1].matchAll(/<sup><a href="([^"]*)"[^>]*>\d+<\/a><\/sup>\s*([^<]+)/g)]
-        .map(([, href, name]) => '<a href="' + href + '" target="_blank" rel="noopener">' + name.trim() + '</a>')
-    : [];
+  const affiliations = aff ? aff[1].trim().split(/\s*<br>\s*/) : [];
   const avatar = (html.match(/<div class="avatar-slot">([\s\S]*?)<\/div>/) || [, ''])[1];
   html = html
     .replace(/\s*<div class="brand-name">[\s\S]*?<\/ul>\s*<\/div>/, '')
@@ -388,7 +387,7 @@ function moveAuthorToPostEnd(html) {
     '        <aside class="post-author" aria-label="Author">',
     '          ' + avatar,
     '          <div class="post-author-text">',
-    '            <a href="index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a>',
+    '            <span><a href="index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a>' + nameSup + '</span>',
     affiliations.map(a => '            <span class="post-author-aff">' + a + '</span>').join('\n'),
     '          </div>',
     '        </aside>'

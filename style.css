@@ -891,8 +891,10 @@ h3 {
 .post-author-text { display: flex; flex-direction: column; align-items: center; }
 .post-author-name, .post-author-name:visited { color: var(--fg); text-decoration: none; }
 .post-author-aff { font-style: italic; }
-.post-author-aff a, .post-author-aff a:visited { color: var(--fg-muted); text-decoration: none; }
-.post-author-aff a:hover { color: var(--accent); }
+.post-author-name + sup { font-size: 0.6em; line-height: 0; }
+.post-author-aff sup { font-size: 0.75em; }
+.post-author-text sup a, .post-author-text sup a:visited { color: var(--fg-muted); text-decoration: none; }
+.post-author-text sup a:hover { color: var(--accent); }
 .post-author + .ai-statement { margin-top: 1.2rem; }
 
 .ai-statement {
