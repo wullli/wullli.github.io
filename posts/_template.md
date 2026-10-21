@@ -7,7 +7,7 @@ draft: false
 ---
 
 Write the post in Markdown. Files starting with `_` (like this one) are ignored,
-and `draft: true` keeps a post out of the build.
+and `draft: true` keeps a post unlisted: online, but only reachable by its URL.
 
 Link images and pages relative to the site root, e.g. `![Alt](images/fig.png)`
 or `[another post](posts/other-post.html)`.

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A brief introduction to Probabilistic Programming in Pyro · Probabilistic Programming with Pyro &mdash; Pascal Wullschleger</title>
+  <title>What is Probabilistic Programming? · Probabilistic Programming with Pyro &mdash; Pascal Wullschleger</title>
   <meta name="description" content="This article is intended as my way to learn pyro, though it may be useful for someone else.">
   <meta name="author" content="Pascal Wullschleger">
   <link rel="canonical" href="https://wullli.github.io/posts/pyro/01-ppl-basics.html">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="A brief introduction to Probabilistic Programming in Pyro · Probabilistic Programming with Pyro">
+  <meta property="og:title" content="What is Probabilistic Programming? · Probabilistic Programming with Pyro">
   <meta property="og:description" content="This article is intended as my way to learn pyro, though it may be useful for someone else.">
   <meta property="og:url" content="https://wullli.github.io/posts/pyro/01-ppl-basics.html">
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
@@ -69,17 +69,17 @@
       <article class="post">
         <p class="post-back"><a href="../../blog.html">&larr; All posts</a></p>
         <p class="series-kicker"><a href="../../posts/pyro.html">Probabilistic Programming with Pyro</a> &middot; Part 1 of 4</p>
-        <h1>A brief introduction to Probabilistic Programming in Pyro <span class="draft-badge">Draft</span></h1>
+        <h1>What is Probabilistic Programming? <span class="draft-badge">Draft</span></h1>
         <time class="post-date" datetime="2026-10-13">13 October 2026</time>
         <div class="blog-tags"><span class="blog-tag">stats</span><span class="blog-tag">svi</span><span class="blog-tag">probabilities</span><span class="blog-tag">pyro</span></div>
         <details class="series-box">
           <summary>All chapters</summary>
 <ol class="series-chapters">
   <li class="current">
-    <a href="../../posts/pyro/01-ppl-basics.html" aria-current="page">A brief introduction to Probabilistic Programming in Pyro</a> <span class="draft-badge">Draft</span>
+    <a href="../../posts/pyro/01-ppl-basics.html" aria-current="page">What is Probabilistic Programming?</a> <span class="draft-badge">Draft</span>
   </li>
   <li>
-    <a href="../../posts/pyro/02-svi.html">Stochastic Variational Inference and the Evidence Lower Bound</a> <span class="draft-badge">Draft</span>
+    <a href="../../posts/pyro/02-svi.html">Variational Inference</a> <span class="draft-badge">Draft</span>
   </li>
   <li>
     <a href="../../posts/pyro/03-bnn-in-pyro.html">Pyro Fundamentals on the Example of a Bayesian Neural Network</a> <span class="draft-badge">Draft</span>
@@ -103,7 +103,7 @@ such that you can run arbitrary probabilistic models. In Prolog, we would define
 Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via e.g., stochastic variational inference (SVI). </p>
 <p>This article is my way of learning the fundamentals of Pyro,
 by documenting my understanding along the process and coming up with examples for myself.</p>
-<h2>A running example: are you related to Thomas Bayes?</h2>
+<h2>Example: Are you related to Thomas Bayes?</h2>
 <p>Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes&#39; brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.</p>
 <p><img src="../../images/bayes_family_tree.svg" alt="Fictional family tree linking you to Thomas Bayes"></p>
 <p>William naming his eldest son Nathaniel shifts the odds from 1:1 to 1.5:1. Furthermore, a DNA test shows that you share a stretch of DNA with a known descendant of Joshua Bayes. This results in the probabilistic model depicted in (b), with the following numbers (for illustration, not realistic):</p>
@@ -115,24 +115,32 @@ by documenting my understanding along the process and coming up with examples fo
 <h2>Attempt 1: Prolog</h2>
 <p>You might define the Prolog program as follows to get an answer to your question. Prolog would then backtrack to find you the solution that satisfies all constraints.</p>
 <h4>Prolog Model</h4>
+<p>We initialy define the two possible outcomes (world): Nathaniel is Williams father or he is a stranger.</p>
 <pre><code class="hljs language-prolog">world(nathaniel_bayes).
 world(stranger).
-
-parent(<span class="hljs-symbol">_</span>, joshua_bayes, thomas_bayes).
+</code></pre><p>We define the predicates that hold in our example, that is we know that Thomas and Nathaniel are siblings in any world (_), that william is your father in any world
+and that there is different possible fathers for william (worlds <code>W</code>).</p>
+<pre><code class="hljs language-prolog">parent(<span class="hljs-symbol">_</span>, joshua_bayes, thomas_bayes).
 parent(<span class="hljs-symbol">_</span>, joshua_bayes, nathaniel_bayes).
-parent(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">W</span>, william).
 parent(<span class="hljs-symbol">_</span>, william, you).
-
-ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">X</span>) :- parent(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">X</span>).
+parent(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">W</span>, william).
+</code></pre><p>We can also define what an ancestor is. Here we say its either a parent directly or recursively in the same world.</p>
+<pre><code class="hljs language-prolog">ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">X</span>) :- parent(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">X</span>).
 ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">X</span>) :- parent(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">P</span>, <span class="hljs-symbol">X</span>), ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">P</span>).
-
-related(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">X</span>, <span class="hljs-symbol">Y</span>) :- ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">X</span>), ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">Y</span>).
-
-observed(dna_match).
-
-consistent(<span class="hljs-symbol">W</span>) :- world(<span class="hljs-symbol">W</span>), ( observed(dna_match) -&gt; once(related(<span class="hljs-symbol">W</span>, you, thomas_bayes)) ; true ).
+</code></pre><p>Being related means that two people are linked by an ancestor in the same world.</p>
+<pre><code class="hljs language-prolog">related(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">X</span>, <span class="hljs-symbol">Y</span>) :- ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">X</span>), ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>, <span class="hljs-symbol">Y</span>).
+</code></pre><p>We also define that we observed a DNA match.</p>
+<pre><code class="hljs language-prolog">observed(dna_match).
+</code></pre><p>Now we can check which world is valid. Initially we need to define that <code>W</code> is actually a world.
+Then we define a rule to decide what valid means.
+Here <code>-&gt;</code> is indicating an if-then-else. So if we observe a dna_match, world <code>W</code> is valid
+if in this world you are related to Thomas Bayes. We only search for the first valid world <code>W</code>, thus
+the <code>once</code> statement.</p>
+<pre><code class="hljs language-prolog">valid(<span class="hljs-symbol">W</span>) :- 
+    world(<span class="hljs-symbol">W</span>), 
+    (observed(dna_match) -&gt; once(related(<span class="hljs-symbol">W</span>, you, thomas_bayes)) ; true ).
 </code></pre><p>However, as you noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
-We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>consistent(W)</code>.</p>
+We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>valid(W)</code>.</p>
 <h2>Attempt 2: Pyro</h2>
 <p>In Pyro, we instead define a probabilistic model, a guide, and an inference procedure.</p>
 <h3>The generative model</h3>
@@ -170,7 +178,7 @@ svi = SVI(model, guide, Adam({<span class="hljs-string">&quot;lr&quot;</span>: <
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;P(Nathaniel is father | DNA match) = <span class="hljs-subst">{pyro.param(<span class="hljs-string">&#x27;q&#x27;</span>).item():<span class="hljs-number">.3</span>f}</span>&quot;</span>)
 </code></pre><h4>Output</h4>
 <pre><code class="hljs language-bash">P(Nathaniel is father | DNA match) = 0.985
-</code></pre><p>Although it would be possible to get the exact solution with Pyro, the example shows standard SVI for clarity.
+</code></pre><p>Although it would be possible to get the exact solution with Pyro, the example shows standard SVI for simplicity.
 Here, we iteratively step towards better posteriors (q) using gradient descent with an Adam optimizer. Due to noisy gradients,
 our estimate for the posterior will still be an approximation and not exact.</p>
 <h2>Checking against the exact answer</h2>
@@ -180,9 +188,8 @@ First, we calculate the marginal probability of a match (the evidence) by summin
 <p>Then we get the posterior by plugging everything into Bayes&#39; rule.</p>
 <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>Nathaniel</mtext><mo>∣</mo><mtext>match</mtext><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>Nathaniel</mtext><mo stretchy="false">)</mo><mtext> </mtext><mi>P</mi><mo stretchy="false">(</mo><mtext>match</mtext><mo>∣</mo><mtext>Nathaniel</mtext><mo stretchy="false">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>match</mtext><mo stretchy="false">)</mo></mrow></mfrac><mo>=</mo><mfrac><mn>0.18</mn><mn>0.184</mn></mfrac><mo>≈</mo><mn>0.978.</mn></mrow><annotation encoding="application/x-tex">P(\text{Nathaniel} \mid \text{match}) = \frac{P(\text{Nathaniel})\, P(\text{match} \mid \text{Nathaniel})}{P(\text{match})} = \frac{0.18}{0.184} \approx 0.978.</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">match</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">match</span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">match</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.184</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.18</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.978.</span></span></span></span></span>
 <p>We can see that our approximation using SVI is in the ballpark, but not terribly accurate.
-Since our guide (a Bernoulli with free parameter <code>q</code>) can represent the exact posterior, the gap is not a limitation of the guide, but purely optimization noise:
-the ELBO gradients for a discrete latent variable are estimated from samples, so <code>q</code> keeps jittering around the optimum instead of settling on it.
-There would be ways to mitigate this (e.g., a smaller learning rate or averaging <code>q</code> over the last steps), but we won&#39;t consider them here for simplicity.</p>
+Since our guide (a Bernoulli with free parameter <code>q</code>) can represent the exact posterior, the gap is caused by poor optimization:
+There would be ways to mitigate this, but we won&#39;t consider them here for simplicity.</p>
 <h2>Summary</h2>
 <p>In summary, we can think of Pyro as a declarative language, similar to Prolog, 
 that allows us to reason about uncertainty and gives us tools for inference.
@@ -190,8 +197,12 @@ So far we treated SVI and the ELBO as a black box that &quot;moves the guide clo
 In the next part we look at why we need them in the first place and what the ELBO actually optimizes.</p>
 
         </div>
+        <footer class="ai-statement">
+<p><em><p style="text-align: center;"><em>AI statement</em></em> </p>
+<p>Content and code were written by myself. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p></p>
+        </footer>
         <nav class="series-nav" aria-label="Chapter navigation">
-  <a class="next" href="../../posts/pyro/02-svi.html"><span class="series-nav-label">Next &rarr;</span>Stochastic Variational Inference and the Evidence Lower Bound</a>
+  <a class="next" href="../../posts/pyro/02-svi.html"><span class="series-nav-label">Next &rarr;</span>Variational Inference</a>
         </nav>
       </article>
     </div>

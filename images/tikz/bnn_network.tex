@@ -1,0 +1,26 @@
+\documentclass[border=4pt]{standalone}
+\input{_preamble}
+\begin{document}
+\begin{tikzpicture}[px]
+  \node[io] (x1) at (150, 145) {$x_1$};
+  \node[io] (x2) at (150, 255) {$x_2$};
+  \node[io] (y)  at (850, 200) {$y$};
+  \foreach \j in {1,...,5} \node[hidden] (h\j) at (500, {80*\j - 40}) {};
+
+  % theta_1..5 leave x1, theta_6..10 leave x2, theta_11..15 enter y
+  \foreach \j in {1,...,5} {
+    \pgfmathtruncatemacro{\k}{\j + 5}
+    \pgfmathtruncatemacro{\m}{\j + 10}
+    \draw[edge] (x1) -- coordinate[pos=.55] (w\j) (h\j);
+    \draw[edge] (x2) -- coordinate[pos=.83] (w\k) (h\j);
+    \draw[edge] (h\j) -- coordinate[pos=.5] (w\m) (y);
+  }
+  \foreach \i in {1,...,15} {
+    \node[text=accent, fill=white, inner sep=1pt] at ($(w\i) + (0, -20)$) {$\theta_{\i}$};
+    \gauss{($(w\i) + (0, 4)$)}{0}{1}{22}{11.6}
+  }
+
+  \node[caption] at (500, 406)
+    {Prior: every one of the 15 weights gets the same distribution $\mathcal{N}(0, 1)$};
+\end{tikzpicture}
+\end{document}

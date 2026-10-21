@@ -26,6 +26,21 @@ jobs:
 
       - run: npm ci
 
+      # TikZ figures (images/tikz/) need LaTeX only when a figure changed
+      - uses: actions/cache@v4
+        id: tikz-cache
+        with:
+          path: .tikz-cache
+          key: tikz-${{ hashFiles('images/tikz/**') }}
+
+      - name: Install TeX for TikZ figures
+        if: steps.tikz-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-pictures texlive-fonts-recommended lmodern dvisvgm
+
       - name: Build static site
         run: node build.js
 

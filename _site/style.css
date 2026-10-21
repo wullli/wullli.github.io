@@ -843,6 +843,16 @@ h3 {
 .series-box[open] summary { margin-bottom: 0.6rem; }
 .series-all { margin-top: 0.6rem; }
 
+.ai-statement {
+  margin-top: 3rem;
+  padding: 1.2rem clamp(0.75rem, 20%, 10.0rem) 0;
+  border-top: 1px solid var(--rule);
+  font-size: var(--sz-sm);
+  color: var(--fg-muted);
+}
+.ai-statement p { margin: 0; }
+.ai-statement + .series-nav { margin-top: 1.2rem; }
+
 .series-nav {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -877,6 +887,21 @@ h3 {
 .post-body { margin-top: 2rem; }
 .post-body h2:first-child { margin-top: 0; }
 .post-body h3 { margin: 1.8rem 0 0.6rem; }
+/* ### sits clearly below ## (h2: 17px, underlined) */
+.post-body h3, .series-chapter .post-body h4 { font-size: var(--sz-base); font-weight: 600; color: var(--fg-muted); }
+/* One-page series view demotes ## → h3 and ### → h4 (chapter titles take h2);
+   keep them looking like ## and ###, with chapter titles above both */
+.series-chapter .chapter-title { font-size: var(--sz-lg); }
+.series-chapter .post-body h3 {
+  font-size: var(--sz-md);
+  color: var(--fg);
+  line-height: 1.3;
+  margin: 2.8rem 0 1.1rem;
+  border-bottom: 1px solid var(--accent-muted);
+  padding-bottom: 0.3rem;
+}
+.series-chapter .post-body h3:first-child { margin-top: 0; }
+.series-chapter .post-body h4 { margin: 1.8rem 0 0.6rem; line-height: 1.4; }
 .post-body ul, .post-body ol { margin: 0 0 1rem 1.5rem; }
 .post-body li { margin-bottom: 0.3rem; }
 .post-body img { max-width: 100%; height: auto; display: block; margin: 1.5rem auto; }

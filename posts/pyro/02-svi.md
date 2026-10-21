@@ -1,5 +1,5 @@
 ---
-title: Stochastic Variational Inference and the Evidence Lower Bound
+title: Variational Inference
 date: 2026-10-13
 summary: This article is intended as my way to learn pyro, though it may be useful for someone else.
 tags: stats, svi, probabilities, pyro
@@ -73,8 +73,13 @@ $$
 p(\boldsymbol{\theta} \mid \mathbf{x}) \approx q(\boldsymbol{\theta})
 $$
 
+More intuitively, we search for the best approximation in the space of our possible posteriors according to some distance as 
+visualized in the figure below.
 
-## Evidence Lower Bound
+![The variational family Q contains every q we can express; VI moves from an initial guess to the member q* closest to the true posterior, 
+  which lies outside Q](images/variational_family.svg)
+
+## Evidence Lower Bound (ELBO)
 
 Now to compare our two distributions, we can use the KL-divergence, which is a distance measure between two probability distributions.
 In our example, it is defined as:
@@ -106,6 +111,54 @@ What this means: $\log p(\mathbf{x})$ does not depend on our approximation of th
 Since it is a sum of the ELBO plus the KL divergence, if the ELBO increases, the KL divergence needs to decrease such that we get the same $\log p(\mathbf{x})$.
 Therefore we can simply maximize the ELBO in order to minimize the KL-divergence.
 
+
+
+### ELBO interpretation
+
+Now, the above version of the ELBO is a bit hard to interpret. However, it turns out that it can be rearranged into a more intuitive form by a few steps.
+With the chain rule, we can split the joint probability of $\Theta$ and $x$ and due to the log product rule, this becomes a sum:
+
+$$
+\tag{1}
+\text{ELBO} = \mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log p(\mathbf{x} \mid \boldsymbol{\Theta}) + \log p(\boldsymbol{\Theta})\big] -
+\mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log q(\boldsymbol{\Theta})\big]
+$$
+
+Since the sum of expecations is equal to the expecation of the sum, we can split the expecations:
+
+$$
+\tag{2}
+\text{ELBO} = \mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log p(\mathbf{x} \mid \boldsymbol{\Theta})\big] + \mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log p(\boldsymbol{\Theta})\big] -
+\mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log q(\boldsymbol{\Theta})\big]
+$$
+
+Now we have a difference between $p(\Theta)$ and $q(\Theta)$ in log space. This means we can apply the quotient rule to get a ratio of these.
+Looking back we can see that the expecation of a ratio of two distributions is exactly a KL-divergence, but
+the distribution we average over needs to be in the numerator. We can achieve this by negating and the quotient rule
+since $\log\frac{p}{q} = \log p - \log q = -\log q + \log p = - (\log q - \log p) = -\log\frac{q}{p}$.
+
+$$
+\tag{3}
+\mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log p(\boldsymbol{\Theta}) - \log q(\boldsymbol{\Theta})\big] = - \mathbb{E}_{\boldsymbol{\Theta} \sim q}\left[\log
+\frac{q(\boldsymbol{\Theta})}{p(\boldsymbol{\Theta})}\right] = - D_\text{KL}\big(q(\boldsymbol{\Theta}) \parallel p(\boldsymbol{\Theta})\big)
+$$
+
+Now the ELBO becomes a difference of the probability of the data given the parameters and the KL-divergence of
+our approximation of the posterior $q(\Theta)$ and the prior on the parameters $p(\Theta)$. 
+
+$$
+\tag{4}
+\text{ELBO} = \underbrace{\mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log p(\mathbf{x} \mid \boldsymbol{\Theta})\big]}_{\text{reconstruction}} 
+- \underbrace{D_\text{KL}\big(q(\boldsymbol{\Theta}) \parallel p(\boldsymbol{\Theta})\big)}_{\text{regularization}}
+$$
+
+This is generally interpreted as 
+a objective with two components: reconstruction and regularization.
+
+* **Reconstruction**: Rises with the likelihood of the data given the parameters. So the likelier our data given our model parameters, the higher this value.
+* **Regularization**: Penalizes if our posterior approximation strays to far from our prior distribution. So this is a regularization.
+
+
 ## The Mean-Field Assumption
 Remember that we try to model the true posterior using a simpler drop-in $q$. In principle, there could be covariance between our $\theta_i$ in the true posterior. 
 However, the expectations in the ELBO require us to integrate over possible $\Theta$, which results in the same infeasible integral as before.
@@ -127,6 +180,6 @@ Since the ELBO requires the expectation of the log, the product becomes a sum. A
 So we can simply calculate the expectation for each weight separately, which we know how to, since 
 each weight is normally distributed.
 
-$$\mathbb{E}_{\Theta\sim q}[\log p(\Theta, \mathbf{x})] = \int q(\theta),\log p(\theta, \mathbf{x}),d\theta$$
+$$\mathbb{E}_{\boldsymbol{\Theta} \sim q}[\log p(\Theta, \mathbf{x})] = \int q(\theta),\log p(\theta, \mathbf{x}),d\theta$$
 
 In the next part we will go over the Pyro fundamentals using this BNN as an example.

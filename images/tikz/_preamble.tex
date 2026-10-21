@@ -1,0 +1,52 @@
+% Shared preamble for the TikZ figures; each figure starts with
+%   \documentclass[border=4pt]{standalone}
+%   \input{_preamble}
+% Coordinates are px on a 1000px-wide canvas with y growing downwards (the
+% `px` style), and font sizes are px * 0.75. Figures are drawn for a light
+% background; style.css inverts them in dark mode.
+\def\pgfsysdriver{pgfsys-dvisvgm.def}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc}
+
+\definecolor{ink}{HTML}{222222}
+\definecolor{muted}{HTML}{6A6A60}
+\definecolor{edge}{HTML}{808080}
+\definecolor{accent}{HTML}{D64A3C}
+\definecolor{accentbg}{HTML}{FBE4E1}
+\definecolor{unit}{HTML}{4A6FA5}
+\definecolor{latentbg}{HTML}{E8EEF6}
+\definecolor{observedbg}{HTML}{C9C9C9}
+\definecolor{observed}{HTML}{444444}
+\definecolor{panel}{HTML}{F0F0F0}
+
+\newcommand{\fsBody}{\fontsize{11.25}{13.5}\selectfont}   % 15px
+\newcommand{\fsLabel}{\fontsize{10.5}{12.6}\selectfont}   % 14px
+\newcommand{\fsSmall}{\fontsize{9.75}{11.7}\selectfont}   % 13px
+\newcommand{\fsTiny}{\fontsize{9}{10.8}\selectfont}       % 12px
+
+\tikzset{
+  px/.style={x=0.75pt, y=-0.75pt, font=\fsBody, text=ink, line join=round},
+  edge/.style={draw=edge, line width=1.125pt},
+  % network nodes: observed inputs/outputs and hidden units
+  io/.style={circle, draw=edge, fill=white, line width=1.125pt, minimum size=33pt,
+             inner sep=0pt, text=muted},
+  hidden/.style={circle, fill=unit, minimum size=27pt, inner sep=0pt},
+  caption/.style={font=\fsBody\bfseries},
+}
+
+% \gauss{(x,y)}{mu}{sigma}{half width}{peak}: N(mu, sigma^2) over [-3, 3]
+% stretched to +-half width (px), above a baseline at (x,y) with a tick at 0.
+% The peak is `peak`/sigma px tall, capped at 26px. A white backing hides
+% the edge the glyph sits on.
+\newcommand{\gauss}[5]{%
+  \begin{scope}[shift={#1}]
+    \pgfmathsetmacro{\gaussh}{min(26, #5/#3)}
+    \fill[white] (-#4-4, 6) rectangle (#4+4, -\gaussh-2);
+    \draw[edge, line width=0.75pt] (-#4, 0) -- (#4, 0) (0, 0) -- (0, 4);
+    \draw[accent, line width=1.35pt, domain=-3:3, samples=241]
+      plot ({\x*#4/3}, {-\gaussh*exp(-(\x-(#2))^2/(2*(#3)^2))});
+  \end{scope}}

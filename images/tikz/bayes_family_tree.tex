@@ -1,0 +1,57 @@
+\documentclass[border=4pt]{standalone}
+\input{_preamble}
+\begin{document}
+\begin{tikzpicture}[px,
+    person/.style={draw=unit, fill=latentbg, line width=1.125pt, rounded corners=6pt,
+                   minimum width=112.5pt, minimum height=33pt},
+    certain/.style={edge, line width=1.5pt},
+    uncertain/.style={draw=accent, line width=1.875pt, dash pattern=on 5.25pt off 3.75pt},
+    latent/.style={circle, draw=unit, fill=latentbg, line width=1.125pt, align=center,
+                   font=\fsLabel},
+    observed/.style={circle, draw=observed, fill=observedbg, line width=1.5pt, align=center,
+                     font=\fsLabel},
+    cpt/.style={draw=edge, fill=panel, line width=.75pt, rounded corners=6pt}]
+
+  % (a) family tree
+  \node[person] (joshua)    at (280,  40) {Joshua Bayes};
+  \node[person] (thomas)    at (150, 140) {Thomas Bayes};
+  \node[person] (nathaniel) at (410, 140) {Nathaniel Bayes};
+  \node[person] (william)   at (410, 250) {William};
+  \node[person] (you)       at (410, 350) {You};
+  \draw[certain] (joshua.south) -- (280, 90) -| (thomas.north);
+  \draw[certain] (280, 90) -| (nathaniel.north);
+  \draw[certain] (william) -- (you);
+  \draw[uncertain] (nathaniel) -- (william);
+  \node[draw=accent, fill=accentbg, line width=.75pt, rounded corners=9pt, font=\fsSmall,
+        minimum width=60pt, minimum height=18pt] at (360, 196) {P = 0.6};
+
+  % (b) graphical model
+  \node[latent, minimum size=69pt]   (father) at (660, 145) {Father of\\William};
+  \node[observed, minimum size=69pt] (dna)    at (900, 145) {DNA\\match};
+  \draw[edge, line width=1.5pt, -{Triangle[length=7pt, width=7pt]}] (father) -- (dna);
+
+  \begin{scope}[font=\fontsize{9.4}{11}\selectfont]
+    \foreach \x/\title/\pn/\ps in {660/P(father)/0.6/0.4, 900/P(match | father)/0.3/0.01} {
+      \draw[cpt] (\x - 80, 211) rectangle (\x + 80, 291);
+      \node[font=\fontsize{9.4}{11}\selectfont\bfseries] at (\x, 229) {\title};
+      \node[anchor=west] at (\x - 66, 253) {Nathaniel};
+      \node[anchor=east] at (\x + 66, 253) {\pn};
+      \node[anchor=west] at (\x - 66, 273) {stranger};
+      \node[anchor=east] at (\x + 66, 273) {\ps};
+    }
+  \end{scope}
+
+  \node[caption] at (280, 400) {(a) Family tree};
+  \node[caption] at (780, 400) {(b) Probabilistic graphical model};
+
+  % legend
+  \begin{scope}[font=\fsTiny, every node/.style={anchor=west}]
+    \draw[certain] (482, 16) -- (512, 16) node[right=3pt] {certain parent (P = 1)};
+    \draw[uncertain] (674, 16) -- (704, 16) node[right=3pt] {uncertain parent};
+    \node[latent, minimum size=12pt, anchor=center] at (839, 16) {};
+    \node[inner sep=0pt] at (853, 16) {latent};
+    \node[observed, minimum size=12pt, anchor=center] at (917, 16) {};
+    \node[inner sep=0pt] at (931, 16) {observed};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

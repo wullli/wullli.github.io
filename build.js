@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs   = require('fs');
-const path = require('path');
-const vm   = require('vm');
+const fs     = require('fs');
+const path   = require('path');
+const vm     = require('vm');
+const crypto = require('crypto');
+const { spawnSync } = require('child_process');
 const { Marked } = require('marked');
 const { markedHighlight } = require('marked-highlight');
 const hljs = require('highlight.js');
@@ -59,7 +61,9 @@ function withKatexCss(html, prefix) {
 
 const SITE_URL  = 'https://wullli.github.io';
 const POSTS_DIR = 'posts';
-// --drafts (used by serve.js) includes posts marked draft: true; deploys omit them
+// Posts marked draft: true are listed (badged) with --drafts, used by serve.js.
+// Deploys still build their pages, but leave them out of the blog, the series
+// chapter lists and the sitemap, and mark them noindex: online, reachable only by URL.
 const SHOW_DRAFTS = process.argv.includes('--drafts');
 
 // Load pubs.js globals into this context (pure string functions, no DOM calls)
@@ -180,8 +184,21 @@ function loadMarkdown(file, defaults = {}) {
     summary: meta.summary || '',
     tags:    meta.tags ? meta.tags.split(',').map(t => t.trim()).filter(Boolean) : (defaults.tags || []),
     draft:   meta.draft === 'true',
+    hidden:  meta.draft === 'true' && !SHOW_DRAFTS,
     html:    marked.parse(body)
   };
+}
+
+// posts/_ai_statement.md, shown once at the end of every post, chapter and one-page view
+const AI_STATEMENT_FILE = path.join(POSTS_DIR, '_ai_statement.md');
+let aiStatementHtml;
+function renderAiStatement() {
+  if (aiStatementHtml === undefined) {
+    aiStatementHtml = fs.existsSync(AI_STATEMENT_FILE)
+      ? '        <footer class="ai-statement">\n' + marked.parse(fs.readFileSync(AI_STATEMENT_FILE, 'utf8')) + '        </footer>'
+      : '';
+  }
+  return aiStatementHtml;
 }
 
 // posts/<slug>.md → posts/<slug>.html
@@ -207,16 +224,25 @@ function loadSeries(dir) {
       const slug = f.replace(/\.md$/, '');
       return { slug, url: POSTS_DIR + '/' + dir + '/' + slug + '.html',
                ...loadMarkdown(path.join(base, f), series) };
-    })
-    .filter(c => SHOW_DRAFTS || !c.draft);
+    });
   if (!chapters.length) return null;
-  chapters.forEach((c, i) => { c.num = i + 1; });
-  return {
+  const shown = chapters.filter(c => !c.hidden);
+  // A hidden series shows all its chapters; a listed one only its listed chapters
+  const hidden = series.hidden || !shown.length;
+  const s = withChapters({
     kind: 'series', slug: dir, url: POSTS_DIR + '/' + dir + '.html',
-    allUrl: POSTS_DIR + '/' + dir + '/all.html', ...series, chapters,
-    // A new chapter moves the series back to the top of the blog
-    sortDate: chapters.reduce((d, c) => c.date > d ? c.date : d, series.date)
-  };
+    allUrl: POSTS_DIR + '/' + dir + '/all.html', ...series, hidden
+  }, hidden ? chapters : shown);
+  // Hidden chapters of a listed series get their pages from a view with every chapter
+  s.fullView = hidden || shown.length === chapters.length ? null : withChapters(s, chapters);
+  return s;
+}
+
+// Copy of series `s` showing `chapters`, numbered from 1
+function withChapters(s, chapters) {
+  chapters = chapters.map((c, i) => ({ ...c, num: i + 1 }));
+  // A new chapter moves the series back to the top of the blog
+  return { ...s, chapters, sortDate: chapters.reduce((d, c) => c.date > d ? c.date : d, s.date) };
 }
 
 // Posts and series, newest first
@@ -225,7 +251,7 @@ function loadEntries() {
   return fs.readdirSync(POSTS_DIR, { withFileTypes: true })
     .filter(e => !e.name.startsWith('_') && !e.name.startsWith('.'))
     .map(e => e.isDirectory() ? loadSeries(e.name) : e.name.endsWith('.md') ? loadPost(e.name) : null)
-    .filter(p => p && (SHOW_DRAFTS || !p.draft))
+    .filter(Boolean)
     .map(p => ({ ...p, sortDate: p.sortDate || p.date }))
     .sort((a, b) => b.sortDate.localeCompare(a.sortDate));
 }
@@ -346,6 +372,7 @@ function renderPage(template, page) {
   html = setAttr(html, '<meta property="og:title" content="', esc(page.title));
   html = setAttr(html, '<meta property="og:description" content="', desc);
   html = setAttr(html, '<meta property="og:url" content="', url);
+  if (page.hidden) html = html.replace('</head>', () => '  <meta name="robots" content="noindex">\n</head>');
   html = html.replace(/<main>[\s\S]*<\/main>/, () => [
     '<main>',
     '    <div class="container">',
@@ -362,19 +389,20 @@ function renderPage(template, page) {
 }
 
 function renderPostPage(template, p) {
-  return renderPage(template, { url: p.url, title: p.title, desc: p.summary || p.title, main: [
+  return renderPage(template, { hidden: p.hidden, url: p.url, title: p.title, desc: p.summary || p.title, main: [
     '        <p class="post-back"><a href="blog.html">&larr; All posts</a></p>',
     '        <h1>' + esc(p.title) + draftBadge(p) + '</h1>',
     '        ' + renderDate(p.date),
     '        ' + renderTags(p.tags),
     '        <div class="post-body">',
     p.html,
-    '        </div>'
-  ].join('\n') });
+    '        </div>',
+    renderAiStatement()
+  ].filter(Boolean).join('\n') });
 }
 
 function renderSeriesPage(template, s) {
-  return renderPage(template, { url: s.url, title: s.title, desc: s.summary || s.title, main: [
+  return renderPage(template, { hidden: s.hidden, url: s.url, title: s.title, desc: s.summary || s.title, main: [
     '        <p class="post-back"><a href="blog.html">&larr; All posts</a></p>',
     '        <p class="series-kicker">Series' + partsBadge(s) + '</p>',
     '        <h1>' + esc(s.title) + draftBadge(s) + '</h1>',
@@ -392,7 +420,7 @@ function renderChapterPage(template, s, c) {
       '</span>' + esc(ch.title) + '</a>'
     : '';
   return renderPage(template, {
-    url: c.url, title: c.title + ' · ' + s.title, desc: c.summary || s.summary || c.title,
+    hidden: s.hidden || c.hidden, url: c.url, title: c.title + ' · ' + s.title, desc: c.summary || s.summary || c.title,
     main: [
       '        <p class="post-back"><a href="blog.html">&larr; All posts</a></p>',
       '        <p class="series-kicker"><a href="' + s.url + '">' + esc(s.title) + '</a>' +
@@ -408,6 +436,7 @@ function renderChapterPage(template, s, c) {
       '        <div class="post-body">',
       c.html,
       '        </div>',
+      renderAiStatement(),
       '        <nav class="series-nav" aria-label="Chapter navigation">',
       navLink(prev, 'prev', '&larr; Previous'),
       next ? navLink(next, 'next', 'Next &rarr;')
@@ -422,7 +451,7 @@ function renderChapterPage(template, s, c) {
 function renderSeriesAllPage(template, s) {
   const demote = html => html.replace(/<(\/?)h([2-5])\b/g, (_, slash, n) => '<' + slash + 'h' + (+n + 1));
   return renderPage(template, {
-    url: s.allUrl, title: s.title + ' (all chapters)', desc: s.summary || s.title,
+    hidden: s.hidden, url: s.allUrl, title: s.title + ' (all chapters)', desc: s.summary || s.title,
     main: [
       '        <p class="post-back"><a href="' + s.url + '">&larr; Series overview</a></p>',
       '        <p class="series-kicker">Series' + partsBadge(s) + ' &middot; one page</p>',
@@ -440,9 +469,61 @@ function renderSeriesAllPage(template, s) {
         demote(c.html),
         '          </div>',
         '        </section>'
-      ].join('\n')).join('\n')
-    ].join('\n')
+      ].join('\n')).join('\n'),
+      renderAiStatement()
+    ].filter(Boolean).join('\n')
   });
+}
+
+// TikZ figures: images/tikz/<name>.tex (standalone documents) → _site/images/<name>.svg,
+// so posts reference them as images/<name>.svg. Rendered with latex + dvisvgm and
+// cached in .tikz-cache/ by content hash; LaTeX only runs for changed figures.
+// Files starting with _ are shared includes (the preamble), not figures.
+const TIKZ_DIR   = path.join('images', 'tikz');
+const TIKZ_CACHE = '.tikz-cache';
+
+function run(cmd, args, cwd) {
+  const r = spawnSync(cmd, args, { cwd, encoding: 'utf8' });
+  if (r.error) throw new Error(cmd + ' failed: ' + r.error.message + ' (is TeX Live installed?)');
+  if (r.status !== 0) throw new Error(cmd + ' ' + args.join(' ') + ' failed:\n' + (r.stdout + r.stderr).slice(-3000));
+}
+
+function renderTikz(destDir) {
+  if (!fs.existsSync(TIKZ_DIR)) return 0;
+  const files = fs.readdirSync(TIKZ_DIR).sort();
+  // Includes are part of every hash, so editing the preamble re-renders all figures
+  const shared = files.filter(f => f.startsWith('_')).map(f => fs.readFileSync(path.join(TIKZ_DIR, f)));
+  const figures = files.filter(f => f.endsWith('.tex') && !f.startsWith('_'));
+  fs.mkdirSync(TIKZ_CACHE, { recursive: true });
+  fs.mkdirSync(destDir, { recursive: true });
+  const keep = new Set();
+  figures.forEach(f => {
+    const name = f.replace(/\.tex$/, '');
+    const hash = crypto.createHash('sha256')
+      .update(Buffer.concat([...shared, fs.readFileSync(path.join(TIKZ_DIR, f))]))
+      .digest('hex').slice(0, 16);
+    const cached = name + '-' + hash + '.svg';
+    keep.add(cached);
+    if (!fs.existsSync(path.join(TIKZ_CACHE, cached))) {
+      console.log('Rendering ' + path.join(TIKZ_DIR, f));
+      // Work dir inside the cache so the final rename is atomic (serve.js may build concurrently)
+      const tmp = path.resolve(fs.mkdtempSync(path.join(TIKZ_CACHE, 'tmp-')));
+      try {
+        run('latex', ['-interaction=nonstopmode', '-halt-on-error', '-output-directory=' + tmp, f], TIKZ_DIR);
+        // --no-fonts turns glyphs into paths; papersize keeps standalone's border
+        run('dvisvgm', ['--no-fonts', '--bbox=papersize', '--verbosity=1',
+                        '-o', path.join(tmp, name + '.svg'), path.join(tmp, name + '.dvi')]);
+        fs.renameSync(path.join(tmp, name + '.svg'), path.join(TIKZ_CACHE, cached));
+      } finally {
+        fs.rmSync(tmp, { recursive: true, force: true });
+      }
+    }
+    fs.copyFileSync(path.join(TIKZ_CACHE, cached), path.join(destDir, name + '.svg'));
+  });
+  fs.readdirSync(TIKZ_CACHE).forEach(f => {
+    if (f.endsWith('.svg') && !keep.has(f)) fs.rmSync(path.join(TIKZ_CACHE, f), { force: true });
+  });
+  return figures.length;
 }
 
 const sorted = sortedEntries(entries);
@@ -457,8 +538,10 @@ const skip = new Set(['_site', 'node_modules', '.git', 'build.js', 'Makefile',
                       'package.json', 'package-lock.json', '.github', 'serve.js', POSTS_DIR]);
 fs.readdirSync('.').forEach(f => {
   if (skip.has(f) || f.startsWith('.')) return;
-  fs.cpSync(f, path.join(outDir, f), { recursive: true });
+  // TikZ sources stay out of the site; renderTikz writes their SVGs
+  fs.cpSync(f, path.join(outDir, f), { recursive: true, filter: src => src !== TIKZ_DIR });
 });
+const figureCount = renderTikz(path.join(outDir, 'images'));
 
 // Patch publications.html
 let pubsHtml = fs.readFileSync(path.join(outDir, 'publications.html'), 'utf8');
@@ -483,17 +566,21 @@ fs.cpSync(path.join(katexDist, 'fonts'), path.join(outDir, 'katex', 'fonts'), { 
 
 // Blog: post/series/chapter pages, post list, sitemap
 const blogTemplate = fs.readFileSync('blog.html', 'utf8');
-const pages = [];  // { url, html, lastmod }
+const pages = [];  // { url, html, lastmod, hidden }
 posts.forEach(p => {
   if (p.kind === 'post') {
-    pages.push({ url: p.url, html: renderPostPage(blogTemplate, p), lastmod: p.date });
+    pages.push({ url: p.url, html: renderPostPage(blogTemplate, p), lastmod: p.date, hidden: p.hidden });
     return;
   }
-  pages.push({ url: p.url, html: renderSeriesPage(blogTemplate, p), lastmod: p.sortDate });
+  pages.push({ url: p.url, html: renderSeriesPage(blogTemplate, p), lastmod: p.sortDate, hidden: p.hidden });
   p.chapters.forEach(c => {
-    pages.push({ url: c.url, html: renderChapterPage(blogTemplate, p, c), lastmod: c.date });
+    pages.push({ url: c.url, html: renderChapterPage(blogTemplate, p, c), lastmod: c.date,
+                 hidden: p.hidden || c.hidden });
   });
-  pages.push({ url: p.allUrl, html: renderSeriesAllPage(blogTemplate, p), lastmod: p.sortDate });
+  if (p.fullView) p.fullView.chapters.filter(c => c.hidden).forEach(c => {
+    pages.push({ url: c.url, html: renderChapterPage(blogTemplate, p.fullView, c), lastmod: c.date, hidden: true });
+  });
+  pages.push({ url: p.allUrl, html: renderSeriesAllPage(blogTemplate, p), lastmod: p.sortDate, hidden: p.hidden });
 });
 pages.forEach(pg => {
   const file = path.join(outDir, pg.url);
@@ -502,13 +589,14 @@ pages.forEach(pg => {
 });
 
 let blogHtml = fs.readFileSync(path.join(outDir, 'blog.html'), 'utf8');
-const blogContent = renderBlogContent(posts);
+const listed = posts.filter(p => !p.hidden);
+const blogContent = renderBlogContent(listed);
 blogHtml = inject(blogHtml, '<!-- POSTS_START -->', '<!-- POSTS_END -->', blogContent);
 if (hasMath(blogContent)) blogHtml = withKatexCss(blogHtml, '');
 fs.writeFileSync(path.join(outDir, 'blog.html'), blogHtml);
 
 let sitemap = fs.readFileSync(path.join(outDir, 'sitemap.xml'), 'utf8');
-sitemap = sitemap.replace('</urlset>', () => pages.map(pg => [
+sitemap = sitemap.replace('</urlset>', () => pages.filter(pg => !pg.hidden).map(pg => [
   '  <url>',
   '    <loc>' + SITE_URL + '/' + pg.url + '</loc>',
   '    <lastmod>' + pg.lastmod + '</lastmod>',
@@ -517,5 +605,6 @@ sitemap = sitemap.replace('</urlset>', () => pages.map(pg => [
 ].join('\n')).join('') + '</urlset>');
 fs.writeFileSync(path.join(outDir, 'sitemap.xml'), sitemap);
 
-console.log('Built ' + entries.length + ' publications, ' + posts.length + ' posts/series, ' +
-            pages.length + ' blog pages → _site/');
+console.log('Built ' + entries.length + ' publications, ' + listed.length + ' posts/series (' +
+            (posts.length - listed.length) + ' unlisted drafts), ' +
+            pages.length + ' blog pages (' + pages.filter(pg => pg.hidden).length + ' unlisted), ' + figureCount + ' TikZ figures → _site/');

@@ -119,31 +119,3 @@ Each sample from $q$ gives a slightly different network and therefore a slightly
 ```python fold-imports
 {% include "bnn.py" %}
 ```
-
-
-1. Split the joint
-
-$$
-\log p(\boldsymbol{\Theta}, \mathbf{x}) = \log p(\mathbf{x} \mid \boldsymbol{\Theta}) + \log p(\boldsymbol{\Theta})
-$$
-
-2. Substitute into the ELBO (expectation is linear)
-
-$$
-\text{ELBO} = \mathbb{E}{q}\big[\log p(\mathbf{x} \mid \boldsymbol{\Theta})\big] + \mathbb{E}{q}\big[\log p(\boldsymbol{\Theta})\big] -
-\mathbb{E}_{q}\big[\log q(\boldsymbol{\Theta})\big]
-$$
-
-3. Combine the last two terms
-
-$$
-\mathbb{E}{q}\big[\log p(\boldsymbol{\Theta}) - \log q(\boldsymbol{\Theta})\big] = -,\mathbb{E}{q}\left[\log
-\frac{q(\boldsymbol{\Theta})}{p(\boldsymbol{\Theta})}\right] = -,D_\text{KL}\big(q(\boldsymbol{\Theta}) \parallel p(\boldsymbol{\Theta})\big)
-$$
-
-Result
-
-$$
-\text{ELBO} = \underbrace{\mathbb{E}{\boldsymbol{\Theta} \sim q}\big[\log p(\mathbf{x} \mid \boldsymbol{\Theta})\big]}{\text{reconstruction / data
-fit}} - \underbrace{D_\text{KL}\big(q(\boldsymbol{\Theta}) \parallel p(\boldsymbol{\Theta})\big)}_{\text{regularization}}
-$$

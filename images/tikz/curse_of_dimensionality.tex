@@ -1,0 +1,52 @@
+\documentclass[border=4pt]{standalone}
+\input{_preamble}
+\begin{document}
+\begin{tikzpicture}[px,
+    axis label/.style={text=muted},
+    spacing/.style={draw=accent, line width=1.125pt},
+    spacing label/.style={text=accent, font=\fsSmall}]
+
+  % (a) 1 weight: 10 points on [-3, 3]
+  \draw[edge] (40, 168) -- (300, 168);
+  \node[text=edge, font=\fsTiny] at (40, 186) {\textminus3};
+  \node[text=edge, font=\fsTiny] at (300, 186) {3};
+  \foreach \i in {0,...,9} \fill[unit] (53 + 26*\i, 168) circle[radius=4.5];
+  \draw[spacing] (53, 161) -- (53, 156) -- (79, 156) -- (79, 161);
+  \node[spacing label] at (66, 145) {0.6};
+  \node[axis label] at (170, 208) {$\theta_1$};
+
+  % (b) 2 weights: a 10 x 10 grid
+  \draw[edge] (370, 38) rectangle (630, 298);
+  \foreach \i in {0,...,9} \foreach \j in {0,...,9}
+    \fill[unit] (383 + 26*\i, 51 + 26*\j) circle[radius=4];
+  \draw[spacing] (383, 35) -- (383, 30) -- (409, 30) -- (409, 35);
+  \node[spacing label] at (396, 19) {0.6};
+  \node[axis label] at (500, 320) {$\theta_1$};
+  \node[axis label, anchor=east] at (360, 170) {$\theta_2$};
+
+  % (c) 3 weights: a 10 x 10 x 10 grid in oblique projection; e1, e2, e3 span the cube
+  \begin{scope}[shift={(700, 283.7)}]
+    \coordinate (e1) at (167.7, 0);
+    \coordinate (e2) at (92.3, -63.7);
+    \coordinate (e3) at (0, -167.7);
+    \begin{scope}[draw=edge, line width=.75pt, opacity=.6]
+      \foreach \a/\b/\c in {e1/e2/e3, e2/e3/e1, e3/e1/e2}
+        \draw (0, 0) -- (\a)
+              (\b) -- ($(\b) + (\a)$)
+              (\c) -- ($(\c) + (\a)$)
+              ($(\b) + (\c)$) -- ($(\b) + (\c) + (\a)$);
+    \end{scope}
+    \foreach \i in {0,...,9} \foreach \j in {0,...,9} \foreach \k in {0,...,9}
+      \fill[unit, opacity=.6] ($\i/9*(e1) + \j/9*(e2) + \k/9*(e3)$) circle[radius=1.8];
+    \draw[spacing] (0, 7) -- (0, 12) -- (18.6, 12) -- (18.6, 7);
+    \node[spacing label] at (9.3, 25) {0.6};
+  \end{scope}
+  \node[axis label] at (784, 308) {$\theta_1$};
+  \node[axis label, anchor=west] at (934, 262) {$\theta_2$};
+  \node[axis label, anchor=east] at (690, 205) {$\theta_3$};
+
+  \node[caption] at (170, 350) {(a) 1 weight, 10 evaluations};
+  \node[caption] at (500, 350) {(b) 2 weights, 100 evaluations};
+  \node[caption] at (830, 350) {(c) 3 weights, 1\,000 evaluations};
+\end{tikzpicture}
+\end{document}

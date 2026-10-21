@@ -1,0 +1,40 @@
+\documentclass[border=4pt]{standalone}
+\input{_preamble}
+\usepackage{amsmath}
+\begin{document}
+\begin{tikzpicture}[px,
+    member/.style={circle, fill=unit, inner sep=0pt, minimum size=11pt},
+    iter/.style={circle, fill=unit, opacity=.45, inner sep=0pt, minimum size=6pt},
+    target/.style={circle, fill=accent, inner sep=0pt, minimum size=13pt}]
+
+  % the variational family Q: every distribution q we can express
+  \draw[unit, fill=latentbg, line width=1.5pt]
+    (390, 200) ellipse[x radius=220, y radius=130];
+  \node[font=\fontsize{22}{26}\selectfont, text=unit] at (265, 130) {$\mathcal{Q}$};
+  \node[font=\fsSmall, text=muted, align=left, anchor=north west] at (245, 150)
+    {mean-field normals\\$\prod_i \mathcal{N}(\theta_i;\, \mu_i, \sigma_i^2)$};
+
+  % optimization path from the initial guess to the best member q*
+  \coordinate (init) at (270, 265);
+  \coordinate (best) at (607.8, 181.7);
+  \draw[unit, line width=1.35pt, dash pattern=on 5pt off 3.5pt,
+        -{Triangle[length=8pt, width=7pt]}, shorten >=8pt]
+    plot[smooth, tension=.7] coordinates {(init) (345, 225) (410, 268) (490, 200) (best)};
+  \foreach \p in {(345, 225), (410, 268), (490, 200)} \node[iter] at \p {};
+  \node[member] at (init) {};
+  \node[member] at (best) {};
+  \node[text=unit, anchor=north] at ($(init) + (0, 10)$) {$q_\text{init}$};
+  \node[text=unit, anchor=north east] at ($(best) + (-6, 6)$) {$q^*$};
+
+  % the true posterior, outside of Q
+  \coordinate (post) at (760, 145);
+  \node[target] at (post) {};
+  \node[text=accent, anchor=south] at ($(post) + (0, -12)$) {$p(\boldsymbol{\theta} \mid \mathbf{x})$};
+  \node[text=muted, font=\fsSmall, anchor=west] at ($(post) + (12, 0)$) {true posterior};
+
+  % the gap that remains after optimization
+  \draw[accent, line width=1.35pt, {Triangle[length=7pt, width=6pt]}-{Triangle[length=7pt, width=6pt]},
+        shorten <=9pt, shorten >=9pt] (best) -- (post)
+    node[midway, anchor=north, inner sep=8pt, text=accent] {$D_\text{KL}(q^* \parallel p)$};
+\end{tikzpicture}
+\end{document}

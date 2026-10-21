@@ -1,5 +1,5 @@
 ---
-title: A brief introduction to Probabilistic Programming in Pyro 
+title: What is Probabilistic Programming?
 date: 2026-10-13
 summary: This article is intended as my way to learn pyro, though it may be useful for someone else.
 tags: stats, svi, probabilities, pyro
@@ -22,7 +22,7 @@ Likewise, when running a query in Prolog, the engine performs backtracking autom
 This article is my way of learning the fundamentals of Pyro,
 by documenting my understanding along the process and coming up with examples for myself.
 
-## A running example: are you related to Thomas Bayes?
+## Example: Are you related to Thomas Bayes?
 
 Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes' brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.
 
@@ -39,27 +39,56 @@ William naming his eldest son Nathaniel shifts the odds from 1:1 to 1.5:1. Furth
 You might define the Prolog program as follows to get an answer to your question. Prolog would then backtrack to find you the solution that satisfies all constraints.
 
 #### Prolog Model
+
+We initialy define the two possible outcomes (world): Nathaniel is Williams father or he is a stranger.
 ```prolog
 world(nathaniel_bayes).
 world(stranger).
+```
 
+We define the predicates that hold in our example, that is we know that Thomas and Nathaniel are siblings in any world (_), that william is your father in any world
+and that there is different possible fathers for william (worlds `W`).
+
+```prolog
 parent(_, joshua_bayes, thomas_bayes).
 parent(_, joshua_bayes, nathaniel_bayes).
-parent(W, W, william).
 parent(_, william, you).
+parent(W, W, william).
+```
 
+We can also define what an ancestor is. Here we say its either a parent directly or recursively in the same world.
+
+```prolog
 ancestor(W, A, X) :- parent(W, A, X).
 ancestor(W, A, X) :- parent(W, P, X), ancestor(W, A, P).
+```
 
+Being related means that two people are linked by an ancestor in the same world.
+
+```prolog
 related(W, X, Y) :- ancestor(W, A, X), ancestor(W, A, Y).
+```
 
+We also define that we observed a DNA match.
+
+```prolog
 observed(dna_match).
+```
 
-consistent(W) :- world(W), ( observed(dna_match) -> once(related(W, you, thomas_bayes)) ; true ).
+Now we can check which world is valid. Initially we need to define that `W` is actually a world.
+Then we define a rule to decide what valid means.
+Here `->` is indicating an if-then-else. So if we observe a dna_match, world `W` is valid
+if in this world you are related to Thomas Bayes. We only search for the first valid world `W`, thus
+the `once` statement.
+
+```prolog
+valid(W) :- 
+    world(W), 
+    (observed(dna_match) -> once(related(W, you, thomas_bayes)) ; true ).
 ```
 
 However, as you noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
-We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with `W = nathaniel_bayes` for the query `consistent(W)`.
+We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with `W = nathaniel_bayes` for the query `valid(W)`.
 
 ## Attempt 2: Pyro
 
@@ -120,7 +149,7 @@ print(f"P(Nathaniel is father | DNA match) = {pyro.param('q').item():.3f}")
 P(Nathaniel is father | DNA match) = 0.985
 ```
 
-Although it would be possible to get the exact solution with Pyro, the example shows standard SVI for clarity.
+Although it would be possible to get the exact solution with Pyro, the example shows standard SVI for simplicity.
 Here, we iteratively step towards better posteriors (q) using gradient descent with an Adam optimizer. Due to noisy gradients,
 our estimate for the posterior will still be an approximation and not exact.
 
@@ -140,9 +169,8 @@ P(\text{Nathaniel} \mid \text{match}) = \frac{P(\text{Nathaniel})\, P(\text{matc
 $$
 
 We can see that our approximation using SVI is in the ballpark, but not terribly accurate.
-Since our guide (a Bernoulli with free parameter `q`) can represent the exact posterior, the gap is not a limitation of the guide, but purely optimization noise:
-the ELBO gradients for a discrete latent variable are estimated from samples, so `q` keeps jittering around the optimum instead of settling on it.
-There would be ways to mitigate this (e.g., a smaller learning rate or averaging `q` over the last steps), but we won't consider them here for simplicity.
+Since our guide (a Bernoulli with free parameter `q`) can represent the exact posterior, the gap is caused by poor optimization:
+There would be ways to mitigate this, but we won't consider them here for simplicity.
 
 ## Summary
 
