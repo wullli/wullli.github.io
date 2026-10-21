@@ -15,6 +15,9 @@ Chapters need `title`; `date`/`tags` default to the series'. Builds an overview
 (`posts/<series>.html`), one page per chapter with prev/next, and `posts/<series>/all.html`
 with every chapter on one page. The series is a single entry on the blog, dated by its newest chapter.
 
+`posts/_ai_statement.md` is shown at the end of every post. A series can override it with
+`posts/<series>/_ai_statement.md`, used on all of its chapters and the one-page view.
+
 Code blocks get a copy button; ```` ```python fold-imports ```` collapses leading import lines
 (still included when copying).
 

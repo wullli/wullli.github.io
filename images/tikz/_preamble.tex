@@ -23,6 +23,21 @@
 \definecolor{observed}{HTML}{444444}
 \definecolor{panel}{HTML}{F0F0F0}
 
+% Semantic math colors, same names and light values as the KaTeX macros in
+% build.js / --m-* in style.css (the dark-mode invert keeps the hue)
+\definecolor{mq}{HTML}{1A6ABF}     % approximation q
+\definecolor{mpost}{HTML}{B5402A}  % true posterior
+\definecolor{mprior}{HTML}{2E7D32} % prior
+\definecolor{mlik}{HTML}{B8680A}   % likelihood
+\definecolor{mev}{HTML}{6F42C1}    % evidence
+\definecolor{mpar}{HTML}{AD1457}   % variational parameters mu, sigma
+\newcommand{\cq}[1]{\textcolor{mq}{#1}}
+\newcommand{\cpost}[1]{\textcolor{mpost}{#1}}
+\newcommand{\cprior}[1]{\textcolor{mprior}{#1}}
+\newcommand{\clik}[1]{\textcolor{mlik}{#1}}
+\newcommand{\cev}[1]{\textcolor{mev}{#1}}
+\newcommand{\cpar}[1]{\textcolor{mpar}{#1}}
+
 \newcommand{\fsBody}{\fontsize{11.25}{13.5}\selectfont}   % 15px
 \newcommand{\fsLabel}{\fontsize{10.5}{12.6}\selectfont}   % 14px
 \newcommand{\fsSmall}{\fontsize{9.75}{11.7}\selectfont}   % 13px
@@ -38,15 +53,15 @@
   caption/.style={font=\fsBody\bfseries},
 }
 
-% \gauss{(x,y)}{mu}{sigma}{half width}{peak}: N(mu, sigma^2) over [-3, 3]
+% \gauss[color]{(x,y)}{mu}{sigma}{half width}{peak}: N(mu, sigma^2) over [-3, 3]
 % stretched to +-half width (px), above a baseline at (x,y) with a tick at 0.
 % The peak is `peak`/sigma px tall, capped at 26px. A white backing hides
 % the edge the glyph sits on.
-\newcommand{\gauss}[5]{%
-  \begin{scope}[shift={#1}]
-    \pgfmathsetmacro{\gaussh}{min(26, #5/#3)}
-    \fill[white] (-#4-4, 6) rectangle (#4+4, -\gaussh-2);
-    \draw[edge, line width=0.75pt] (-#4, 0) -- (#4, 0) (0, 0) -- (0, 4);
-    \draw[accent, line width=1.35pt, domain=-3:3, samples=241]
-      plot ({\x*#4/3}, {-\gaussh*exp(-(\x-(#2))^2/(2*(#3)^2))});
+\newcommand{\gauss}[6][accent]{%
+  \begin{scope}[shift={#2}]
+    \pgfmathsetmacro{\gaussh}{min(26, #6/#4)}
+    \fill[white] (-#5-4, 6) rectangle (#5+4, -\gaussh-2);
+    \draw[edge, line width=0.75pt] (-#5, 0) -- (#5, 0) (0, 0) -- (0, 4);
+    \draw[#1, line width=1.35pt, domain=-3:3, samples=241]
+      plot ({\x*#5/3}, {-\gaussh*exp(-(\x-(#3))^2/(2*(#4)^2))});
   \end{scope}}

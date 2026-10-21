@@ -2,7 +2,7 @@
 title: Probabilistic Programming with Pyro
 date: 2026-10-13
 summary: From the basics of probabilistic programming in Pyro to unsupervised item-response models.
-tags: stats, svi, probabilities, pyro
+tags: pyro, probabilistic programming, bayesian inference, variational inference
 draft: true
 ---
 

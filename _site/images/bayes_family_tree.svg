@@ -319,18 +319,18 @@
 </g>
 </g>
 </g>
-<g stroke='#d64a3c'>
+<g stroke='#2e7d32'>
 <g stroke-width='1.875'>
 <g stroke-dasharray='5.25,3.75' stroke-dashoffset='0.0'>
 <path d='M307.5-122.0625V-170.4375' fill='none'/>
 </g>
 </g>
 </g>
-<g stroke='#d64a3c'>
-<g fill='#fbe4e1'>
+<g stroke='#2e7d32'>
+<g fill='#e6f0e7'>
 <g stroke-width='0.75'>
-<g stroke='#d64a3c'>
-<g fill='#fbe4e1'>
+<g stroke='#2e7d32'>
+<g fill='#e6f0e7'>
 <g stroke-width='0.75'>
 <path d='M291-138H249C244.02937-138 240-142.02937 240-147C240-151.97063 244.02937-156 249-156H291C295.97063-156 300-151.97063 300-147C300-142.02937 295.97063-138 291-138ZM240-156'/>
 </g>
@@ -338,9 +338,9 @@
 </g>
 <g transform='translate(255.19421,-150.2048)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-123.4944,-72.786666)scale(-1,-1)'>
-<g fill='#222'>
+<g fill='#2e7d32'>
 <g stroke='none'>
-<g fill='#222'>
+<g fill='#2e7d32'>
 <use x='-123.4944' y='-72.786666' xlink:href='#g11-80'/>
 <use x='-114.774233' y='-72.786666' xlink:href='#g11-61'/>
 <use x='-106.819937' y='-72.786666' xlink:href='#g11-48'/>
@@ -448,9 +448,9 @@
 </g>
 <g transform='translate(476.64471,-174.08296)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-123.4944,-72.786666)scale(-1,-1)'>
-<g fill='#222'>
+<g fill='#2e7d32'>
 <g stroke='none'>
-<g fill='#222'>
+<g fill='#2e7d32'>
 <use x='-123.4944' y='-72.786666' xlink:href='#g5-80'/>
 <use x='-117.560438' y='-72.786666' xlink:href='#g5-40'/>
 <use x='-114.597902' y='-72.786666' xlink:href='#g5-102'/>
@@ -537,9 +537,9 @@
 </g>
 <g transform='translate(639.80753,-174.08296)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-123.4944,-72.786666)scale(-1,-1)'>
-<g fill='#222'>
+<g fill='#b8680a'>
 <g stroke='none'>
-<g fill='#222'>
+<g fill='#b8680a'>
 <use x='-123.4944' y='-72.786666' xlink:href='#g5-80'/>
 <use x='-117.560438' y='-72.786666' xlink:href='#g5-40'/>
 <use x='-114.597902' y='-72.786666' xlink:href='#g5-109'/>
@@ -722,7 +722,7 @@
 </g>
 </g>
 </g>
-<g stroke='#d64a3c'>
+<g stroke='#2e7d32'>
 <g stroke-width='1.875'>
 <g stroke-dasharray='5.25,3.75' stroke-dashoffset='0.0'>
 <path d='M505.5-12H528' fill='none'/>

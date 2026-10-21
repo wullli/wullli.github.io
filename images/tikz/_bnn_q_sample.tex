@@ -29,18 +29,18 @@
   \foreach \i/\mu/\sigma in {1/-0.1/0.95, 2/0.9/1, 3/1.9/0.22, 4/-0.2/0.85, 5/-1.1/0.25,
                              6/-0.3/0.85, 7/0.3/0.9, 8/-0.3/0.25, 9/-0.2/0.7, 10/-1.5/0.35,
                              11/0.1/0.35, 12/0.15/0.13, 13/1.2/0.13, 14/0.1/0.38, 15/-1.2/0.13}
-    \gauss{($(q\i) + (0, 5)$)}{\mu}{\sigma}{18}{15.4};
+    \gauss[mq]{($(q\i) + (0, 5)$)}{\mu}{\sigma}{18}{15.4};
 
   \draw[ink, line width=1.5pt, -{Triangle[length=9pt, width=7pt]}] (490, 200) -- (602, 200)
     node[midway, above=3pt] {sample}
-    node[midway, below=3pt] {$\theta \sim q(\theta)$};
+    node[midway, below=3pt] {$\theta \sim \cq{q(\theta)}$};
 
   \bnn{605}{s}{#1}{#2}{#3}
   \foreach \i/\v in {1/0.6, 2/\textminus0.4, 3/1.2, 4/0.1, 5/\textminus0.9,
                      6/\textminus0.2, 7/0.3, 8/\textminus0.4, 9/\textminus0.8, 10/\textminus0.9,
                      11/0.3, 12/0.0, 13/0.8, 14/0.5, 15/\textminus0.8}
-    \node[text=accent, fill=white, inner sep=2pt, font=\fsSmall] at (s\i) {\v};
+    \node[fill=white, inner sep=2pt, font=\fsSmall] at (s\i) {\v};
 
-  \node[caption] at (265, 406) {Learned $q(\theta)$: one $\mathcal{N}(\mu_i, \sigma_i^2)$ per weight};
+  \node[caption] at (265, 406) {Learned $\cq{q(\theta)}$: one $\mathcal{N}(\cpar{\mu_i}, \cpar{\sigma_i^2})$ per weight};
   \node[caption] at (870, 406) {One sample: an ordinary network};
 \end{tikzpicture}}

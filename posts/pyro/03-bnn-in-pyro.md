@@ -1,8 +1,8 @@
 ---
-title: Pyro Fundamentals on the Example of a Bayesian Neural Network
+title: Pyro Fundamentals
 date: 2026-10-13
-summary: Implementing the Bayesian neural network from the previous part in Pyro and training it with SVI.
-tags: stats, svi, probabilities, pyro
+summary: Implementing the Bayesian neural network from the previous part in Pyro and training it with stochastic variational inference (SVI).
+tags: pyro, bayesian neural networks, variational inference
 draft: true
 ---
 
@@ -10,7 +10,7 @@ draft: true
 
 
 
-Below follows the code for the BNN model from the previous part in Pyro.
+Below follows the code for the Bayesian neural network (BNN) model from the previous part in Pyro.
 
 
 We start with the imports and some constants. We have 5 neurons in the hidden layer, two inputs and one output. 
@@ -80,7 +80,7 @@ a Bernoulli distribution with the logits as its parameters. If an observation is
 are not actually sampled and the `pyro.sample("y", dist.Bernoulli(logits=logits), obs=y)`
 will simply return the observation `y`. However, in the latter case, the statement will have the effect of marking this node
 in the underlying bayesian network Pyro generates as observed and calculating how likely the observation is given
-our current distribution (Bernoulli of the logits). This score is saved in the background and it corresponds to the likelihood of the ELBO
+our current distribution (Bernoulli of the logits). This score is saved in the background and it corresponds to the likelihood of the evidence lower bound (ELBO)
 as previously introduced ($$$$).
 
 

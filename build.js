@@ -51,7 +51,21 @@ marked.use({
   }
 });
 // LaTeX at build time: $inline$ and $$display$$; CSS/fonts copied to _site/katex/
-marked.use(markedKatex({ throwOnError: false }));
+// Semantic color macros (\cq{...} etc.) map to .m-* classes so colors follow the theme
+marked.use(markedKatex({
+  throwOnError: false,
+  nonStandard: true,
+  strict: code => code === 'htmlExtension' ? 'ignore' : 'warn',
+  trust: ctx => ctx.command === '\\htmlClass',
+  macros: {
+    '\\cq':     '\\htmlClass{m-q}{#1}',
+    '\\cpost':  '\\htmlClass{m-post}{#1}',
+    '\\cprior': '\\htmlClass{m-prior}{#1}',
+    '\\clik':   '\\htmlClass{m-lik}{#1}',
+    '\\cev':    '\\htmlClass{m-ev}{#1}',
+    '\\cpar':   '\\htmlClass{m-par}{#1}',
+  },
+}));
 const KATEX_CSS = 'katex/katex.min.css';
 const hasMath = html => html.includes('class="katex');
 // Adds the KaTeX stylesheet to <head>; prefix is the path back to the site root
@@ -189,16 +203,15 @@ function loadMarkdown(file, defaults = {}) {
   };
 }
 
-// posts/_ai_statement.md, shown once at the end of every post, chapter and one-page view
-const AI_STATEMENT_FILE = path.join(POSTS_DIR, '_ai_statement.md');
-let aiStatementHtml;
-function renderAiStatement() {
-  if (aiStatementHtml === undefined) {
-    aiStatementHtml = fs.existsSync(AI_STATEMENT_FILE)
-      ? '        <footer class="ai-statement">\n' + marked.parse(fs.readFileSync(AI_STATEMENT_FILE, 'utf8')) + '        </footer>'
-      : '';
-  }
-  return aiStatementHtml;
+// _ai_statement.md, shown once at the end of every post, chapter and one-page view.
+// A series uses posts/<series>/_ai_statement.md if it has one, else posts/_ai_statement.md.
+const aiStatementCache = {};
+function renderAiStatement(dir = POSTS_DIR) {
+  const file = [path.join(dir, '_ai_statement.md'), path.join(POSTS_DIR, '_ai_statement.md')]
+    .find(f => fs.existsSync(f));
+  if (!file) return '';
+  return aiStatementCache[file] ??= '        <footer class="ai-statement">\n' +
+    marked.parse(fs.readFileSync(file, 'utf8')) + '        </footer>';
 }
 
 // posts/<slug>.md → posts/<slug>.html
@@ -231,7 +244,8 @@ function loadSeries(dir) {
   const hidden = series.hidden || !shown.length;
   const s = withChapters({
     kind: 'series', slug: dir, url: POSTS_DIR + '/' + dir + '.html',
-    allUrl: POSTS_DIR + '/' + dir + '/all.html', ...series, hidden
+    allUrl: POSTS_DIR + '/' + dir + '/all.html', ...series, hidden,
+    aiStatement: renderAiStatement(base)
   }, hidden ? chapters : shown);
   // Hidden chapters of a listed series get their pages from a view with every chapter
   s.fullView = hidden || shown.length === chapters.length ? null : withChapters(s, chapters);
@@ -356,6 +370,71 @@ function renderBlogContent(posts) {
   ].filter(Boolean).join('\n');
 }
 
+// Post pages drop the name, affiliations and avatar from the header; they reappear
+// as an author card at the end of the post (before the AI statement, if any).
+function moveAuthorToPostEnd(html) {
+  const aff = html.match(/<span class="brand-affiliations">([\s\S]*?)<\/span>/);
+  const affiliations = aff
+    ? [...aff[1].matchAll(/<sup><a href="([^"]*)"[^>]*>\d+<\/a><\/sup>\s*([^<]+)/g)]
+        .map(([, href, name]) => '<a href="' + href + '" target="_blank" rel="noopener">' + name.trim() + '</a>')
+    : [];
+  const avatar = (html.match(/<div class="avatar-slot">([\s\S]*?)<\/div>/) || [, ''])[1];
+  html = html
+    .replace(/\s*<div class="brand-name">[\s\S]*?<\/ul>\s*<\/div>/, '')
+    .replace(/\s*<span class="brand-affiliations">[\s\S]*?<\/span>/, '')
+    .replace(/\s*<div class="avatar-slot">[\s\S]*?<\/div>/, '')
+    .replace('<header class="site-nav">', '<header class="site-nav site-nav-minimal">');
+  const card = [
+    '        <aside class="post-author" aria-label="Author">',
+    '          ' + avatar,
+    '          <div class="post-author-text">',
+    '            <a href="index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a>',
+    affiliations.map(a => '            <span class="post-author-aff">' + a + '</span>').join('\n'),
+    '          </div>',
+    '        </aside>'
+  ].filter(Boolean).join('\n') + '\n';
+  return html.includes('<footer class="ai-statement">')
+    ? html.replace('        <footer class="ai-statement">', () => card + '        <footer class="ai-statement">')
+    : html.replace('      </article>', () => card + '      </article>');
+}
+
+// Search/social metadata for a blog page: keywords, Open Graph article tags,
+// and schema.org JSON-LD (BlogPosting, or a Blog for a series overview, linked
+// to its series via isPartOf so search engines see chapters as one work).
+function renderArticleMeta(page, url) {
+  const tags = page.tags || [];
+  const author = { '@type': 'Person', name: 'Pascal Wullschleger', url: SITE_URL + '/' };
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': page.type === 'series' ? 'Blog' : 'BlogPosting',
+    headline: page.title,
+    description: page.desc,
+    url,
+    mainEntityOfPage: url,
+    datePublished: page.date,
+    dateModified: page.modified || page.date,
+    author,
+    keywords: tags.join(', '),
+    inLanguage: 'en'
+  };
+  if (page.series) {
+    ld.isPartOf = { '@type': 'Blog', name: page.series.title, url: SITE_URL + '/' + page.series.url };
+    if (page.part) ld.position = page.part;
+  }
+  return [
+    '  <meta property="og:site_name" content="Pascal Wullschleger">',
+    '  <meta name="twitter:card" content="summary">',
+    tags.length ? '  <meta name="keywords" content="' + esc(tags.join(', ')) + '">' : '',
+    page.date ? '  <meta property="article:published_time" content="' + page.date + '">' : '',
+    page.modified ? '  <meta property="article:modified_time" content="' + page.modified + '">' : '',
+    '  <meta property="article:author" content="Pascal Wullschleger">',
+    page.series ? '  <meta property="article:section" content="' + esc(page.series.title) + '">' : '',
+    ...tags.map(t => '  <meta property="article:tag" content="' + esc(t) + '">'),
+    '  <script type="application/ld+json">' + JSON.stringify(ld).replace(/</g, '\\u003c') + '</script>',
+    ''
+  ].filter(Boolean).join('\n') + '\n';
+}
+
 // Builds a page from blog.html: swaps head metadata and <main> content, and
 // prefixes relative URLs with ../ per directory level below the site root.
 function renderPage(template, page) {
@@ -372,6 +451,7 @@ function renderPage(template, page) {
   html = setAttr(html, '<meta property="og:title" content="', esc(page.title));
   html = setAttr(html, '<meta property="og:description" content="', desc);
   html = setAttr(html, '<meta property="og:url" content="', url);
+  html = html.replace('</head>', () => renderArticleMeta(page, url) + '</head>');
   if (page.hidden) html = html.replace('</head>', () => '  <meta name="robots" content="noindex">\n</head>');
   html = html.replace(/<main>[\s\S]*<\/main>/, () => [
     '<main>',
@@ -382,6 +462,7 @@ function renderPage(template, page) {
     '    </div>',
     '  </main>'
   ].join('\n'));
+  html = moveAuthorToPostEnd(html);
   const prefix = '../'.repeat(page.url.split('/').length - 1);
   html = html.replace(/\b(href|src)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]*)"/gi,
     (_, attr, ref) => attr + '="' + prefix + ref + '"');
@@ -389,7 +470,8 @@ function renderPage(template, page) {
 }
 
 function renderPostPage(template, p) {
-  return renderPage(template, { hidden: p.hidden, url: p.url, title: p.title, desc: p.summary || p.title, main: [
+  return renderPage(template, { hidden: p.hidden, url: p.url, title: p.title, desc: p.summary || p.title,
+                                date: p.date, tags: p.tags, main: [
     '        <p class="post-back"><a href="blog.html">&larr; All posts</a></p>',
     '        <h1>' + esc(p.title) + draftBadge(p) + '</h1>',
     '        ' + renderDate(p.date),
@@ -402,7 +484,8 @@ function renderPostPage(template, p) {
 }
 
 function renderSeriesPage(template, s) {
-  return renderPage(template, { hidden: s.hidden, url: s.url, title: s.title, desc: s.summary || s.title, main: [
+  return renderPage(template, { hidden: s.hidden, url: s.url, title: s.title, desc: s.summary || s.title,
+                                date: s.date, modified: s.sortDate, tags: s.tags, type: 'series', main: [
     '        <p class="post-back"><a href="blog.html">&larr; All posts</a></p>',
     '        <p class="series-kicker">Series' + partsBadge(s) + '</p>',
     '        <h1>' + esc(s.title) + draftBadge(s) + '</h1>',
@@ -421,6 +504,7 @@ function renderChapterPage(template, s, c) {
     : '';
   return renderPage(template, {
     hidden: s.hidden || c.hidden, url: c.url, title: c.title + ' · ' + s.title, desc: c.summary || s.summary || c.title,
+    date: c.date, tags: c.tags, series: s, part: c.num,
     main: [
       '        <p class="post-back"><a href="blog.html">&larr; All posts</a></p>',
       '        <p class="series-kicker"><a href="' + s.url + '">' + esc(s.title) + '</a>' +
@@ -436,7 +520,7 @@ function renderChapterPage(template, s, c) {
       '        <div class="post-body">',
       c.html,
       '        </div>',
-      renderAiStatement(),
+      s.aiStatement,
       '        <nav class="series-nav" aria-label="Chapter navigation">',
       navLink(prev, 'prev', '&larr; Previous'),
       next ? navLink(next, 'next', 'Next &rarr;')
@@ -452,6 +536,7 @@ function renderSeriesAllPage(template, s) {
   const demote = html => html.replace(/<(\/?)h([2-5])\b/g, (_, slash, n) => '<' + slash + 'h' + (+n + 1));
   return renderPage(template, {
     hidden: s.hidden, url: s.allUrl, title: s.title + ' (all chapters)', desc: s.summary || s.title,
+    date: s.date, modified: s.sortDate, tags: s.tags, series: s,
     main: [
       '        <p class="post-back"><a href="' + s.url + '">&larr; Series overview</a></p>',
       '        <p class="series-kicker">Series' + partsBadge(s) + ' &middot; one page</p>',
@@ -470,7 +555,7 @@ function renderSeriesAllPage(template, s) {
         '          </div>',
         '        </section>'
       ].join('\n')).join('\n'),
-      renderAiStatement()
+      s.aiStatement
     ].filter(Boolean).join('\n')
   });
 }

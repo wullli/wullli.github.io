@@ -18,6 +18,17 @@
   <script src="../theme.js"></script>
   <script src="../code.js" defer></script>
   <link rel="stylesheet" href="../style.css">
+  <meta property="og:site_name" content="Pascal Wullschleger">
+  <meta name="twitter:card" content="summary">
+  <meta name="keywords" content="pyro, probabilistic programming, bayesian inference, variational inference">
+  <meta property="article:published_time" content="2026-10-13">
+  <meta property="article:modified_time" content="2026-10-13">
+  <meta property="article:author" content="Pascal Wullschleger">
+  <meta property="article:tag" content="pyro">
+  <meta property="article:tag" content="probabilistic programming">
+  <meta property="article:tag" content="bayesian inference">
+  <meta property="article:tag" content="variational inference">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","headline":"Probabilistic Programming with Pyro","description":"From the basics of probabilistic programming in Pyro to unsupervised item-response models.","url":"https://wullli.github.io/posts/pyro.html","mainEntityOfPage":"https://wullli.github.io/posts/pyro.html","datePublished":"2026-10-13","dateModified":"2026-10-13","author":{"@type":"Person","name":"Pascal Wullschleger","url":"https://wullli.github.io/"},"keywords":"pyro, probabilistic programming, bayesian inference, variational inference","inLanguage":"en"}</script>
 </head>
 <body>
 
@@ -30,19 +41,8 @@
   </svg>
 
   <div class="paper">
-  <header class="site-nav">
+  <header class="site-nav site-nav-minimal">
     <div class="container">
-      <div class="brand-name">
-        <a href="../index.html" class="brand-name-link"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup>
-        <ul class="profile-menu" aria-label="Profiles">
-          <li><a href="https://www.linkedin.com/in/pascal-wullschleger-a20a35167/" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-linkedin"/></svg>LinkedIn</a></li>
-          <li><a href="https://scholar.google.com/citations?user=qDE_SUkAAAAJ&hl=en" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-scholar"/></svg>Google Scholar</a></li>
-          <li><a href="https://orcid.org/0009-0000-6174-6445" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-orcid"/></svg>ORCID</a></li>
-          <li><a href="https://aclanthology.org/people/pascal-wullschleger/" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-acl"/></svg>ACL Anthology</a></li>
-          <li><a href="https://github.com/wullli" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-github"/></svg>GitHub</a></li>
-        </ul>
-      </div>
-      <div class="avatar-slot"><a href="../index.html" class="nav-avatar"><img src="../images/me.jpeg" alt="Pascal Wullschleger"></a></div>
       <nav aria-label="Site navigation">
         <ul class="nav-links">
           <li><a href="../index.html">About</a></li>
@@ -51,10 +51,6 @@
           <li><a href="../cv.html">CV</a></li>
         </ul>
       </nav>
-      <span class="brand-affiliations">
-        <sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University<br>
-        <sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT, HSLU
-      </span>
     </div>
     <div class="header-rule">
       <div class="header-settings">
@@ -70,7 +66,7 @@
         <p class="series-kicker">Series <span class="series-badge">4 parts</span></p>
         <h1>Probabilistic Programming with Pyro <span class="draft-badge">Draft</span></h1>
         <time class="post-date" datetime="2026-10-13">13 October 2026</time>
-        <div class="blog-tags"><span class="blog-tag">stats</span><span class="blog-tag">svi</span><span class="blog-tag">probabilities</span><span class="blog-tag">pyro</span></div>
+        <div class="blog-tags"><span class="blog-tag">pyro</span><span class="blog-tag">probabilistic programming</span><span class="blog-tag">bayesian inference</span><span class="blog-tag">variational inference</span></div>
 <div class="post-body">
 <p>A series on learning Pyro by building things with it: first the core ideas of
 probabilistic programming and inference, then unsupervised item-response models
@@ -80,22 +76,30 @@ for label inference.</p>
 <ol class="series-chapters series-chapters-full">
   <li>
     <a href="../posts/pyro/01-ppl-basics.html">What is Probabilistic Programming?</a> <span class="draft-badge">Draft</span>
-    <p class="series-summary">This article is intended as my way to learn pyro, though it may be useful for someone else.</p>
+    <p class="series-summary">This article is intended as my way to learn Pyro, though it may be useful for someone else.</p>
   </li>
   <li>
     <a href="../posts/pyro/02-svi.html">Variational Inference</a> <span class="draft-badge">Draft</span>
-    <p class="series-summary">This article is intended as my way to learn pyro, though it may be useful for someone else.</p>
+    <p class="series-summary">Why exact Bayesian inference is intractable, and how variational inference and the evidence lower bound (ELBO) turn it into an optimization problem.</p>
   </li>
   <li>
-    <a href="../posts/pyro/03-bnn-in-pyro.html">Pyro Fundamentals on the Example of a Bayesian Neural Network</a> <span class="draft-badge">Draft</span>
-    <p class="series-summary">Implementing the Bayesian neural network from the previous part in Pyro and training it with SVI.</p>
+    <a href="../posts/pyro/03-bnn-in-pyro.html">Pyro Fundamentals</a> <span class="draft-badge">Draft</span>
+    <p class="series-summary">Implementing the Bayesian neural network from the previous part in Pyro and training it with stochastic variational inference (SVI).</p>
   </li>
   <li>
-    <a href="../posts/pyro/04-unsupervised-irt.html">Modelling Unsupervised Item-Response Models with Pyro</a> <span class="draft-badge">Draft</span>
-    <p class="series-summary">This article describes the basic implementation process of unsupervised IRT-models for label-inference.</p>
+    <a href="../posts/pyro/04-unsupervised-irt.html">Unsupervised Item-Response Models with Pyro</a> <span class="draft-badge">Draft</span>
+    <p class="series-summary">This article describes the basic implementation process of unsupervised item-response theory (IRT) models for label inference.</p>
   </li>
 </ol>
 <p class="series-actions"><a href="../posts/pyro/01-ppl-basics.html">Start reading &rarr;</a> &middot; <a href="../posts/pyro/all.html">Read the whole series on one page</a></p>
+        <aside class="post-author" aria-label="Author">
+          <a href="../index.html" class="nav-avatar"><img src="../images/me.jpeg" alt="Pascal Wullschleger"></a>
+          <div class="post-author-text">
+            <a href="../index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a>
+            <span class="post-author-aff"><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">Hamilton Institute, Maynooth University</a></span>
+            <span class="post-author-aff"><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">Applied AI Lab, Lucerne School of IT, HSLU</a></span>
+          </div>
+        </aside>
       </article>
     </div>
   </main>

@@ -1,8 +1,8 @@
 ---
 title: What is Probabilistic Programming?
 date: 2026-10-13
-summary: This article is intended as my way to learn pyro, though it may be useful for someone else.
-tags: stats, svi, probabilities, pyro
+summary: This article is intended as my way to learn Pyro, though it may be useful for someone else.
+tags: pyro, probabilistic programming, bayesian inference
 draft: true
 ---
 
@@ -16,38 +16,37 @@ and allows you to perform inference and optimization automatically.
 
 In essence, it just gives you the 
 declarative tools for distributions, sampling procedures, evidence etc. and standard tools for optimization, 
-such that you can run arbitrary probabilistic models. In Prolog, we would define facts and rules, in Pyro we define a probabilistic process. 
-Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via e.g., stochastic variational inference (SVI). 
+such that you can run arbitrary probabilistic models. In Prolog, we would define facts and rules: a deterministic model,
+while in Pyro we define a probabilistic model.
+Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via, e.g., stochastic variational inference (SVI). 
 
 This article is my way of learning the fundamentals of Pyro,
 by documenting my understanding along the process and coming up with examples for myself.
 
 ## Example: Are you related to Thomas Bayes?
 
-Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes' brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.
+Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is the son of Thomas Bayes' brother Nathaniel, or descended from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.
 
 ![Fictional family tree linking you to Thomas Bayes](images/bayes_family_tree.svg)
 
-William naming his eldest son Nathaniel shifts the odds from 1:1 to 1.5:1. Furthermore, a DNA test shows that you share a stretch of DNA with a known descendant of Joshua Bayes. This results in the probabilistic model depicted in (b), with the following numbers (for illustration, not realistic):
+William named his eldest son Nathaniel, which hints at a family connection and shifts the odds from 1:1 to 1.5:1. Furthermore, a DNA test shows that you share a stretch of DNA with a known descendant of Joshua Bayes. This results in the probabilistic model depicted in (b), with the following numbers (for illustration, not realistic):
 
-- **Prior:** $P(\text{Nathaniel is William's father}) = 0.6$
-- **Match if related:** $P(\text{DNA match} \mid \text{related}) = 0.3$
-- **Match if not related:** $P(\text{DNA match} \mid \text{not related}) = 0.01$
+- **Prior:** $\cprior{P(\text{Nathaniel is William's father})} = 0.6$
+- **Match if related:** $\clik{P(\text{DNA match} \mid \text{related})} = 0.3$
+- **Match if not related:** $\clik{P(\text{DNA match} \mid \text{not related})} = 0.01$
 
 ## Attempt 1: Prolog
 
 You might define the Prolog program as follows to get an answer to your question. Prolog would then backtrack to find you the solution that satisfies all constraints.
+We can start by declaring the two possible outcomes (worlds): Nathaniel is William's father or he is a stranger.
 
-#### Prolog Model
-
-We initialy define the two possible outcomes (world): Nathaniel is Williams father or he is a stranger.
 ```prolog
 world(nathaniel_bayes).
 world(stranger).
 ```
 
-We define the predicates that hold in our example, that is we know that Thomas and Nathaniel are siblings in any world (_), that william is your father in any world
-and that there is different possible fathers for william (worlds `W`).
+We define the predicates that hold in our example, that is we know that Thomas and Nathaniel are siblings in any world (_), that William is your father in any world
+and that there are different possible fathers for William (worlds `W`).
 
 ```prolog
 parent(_, joshua_bayes, thomas_bayes).
@@ -56,7 +55,7 @@ parent(_, william, you).
 parent(W, W, william).
 ```
 
-We can also define what an ancestor is. Here we say its either a parent directly or recursively in the same world.
+We can also define what an ancestor is. Here we say it's either a parent directly or recursively in the same world.
 
 ```prolog
 ancestor(W, A, X) :- parent(W, A, X).
@@ -78,8 +77,8 @@ observed(dna_match).
 Now we can check which world is valid. Initially we need to define that `W` is actually a world.
 Then we define a rule to decide what valid means.
 Here `->` is indicating an if-then-else. So if we observe a dna_match, world `W` is valid
-if in this world you are related to Thomas Bayes. We only search for the first valid world `W`, thus
-the `once` statement.
+if in this world you are related to Thomas Bayes. In general, `related` succeeds once for every common ancestor it finds, i.e., possibly several times
+per world; the `once` statement stops after the first proof, so each valid world is returned only once.
 
 ```prolog
 valid(W) :- 
@@ -87,7 +86,7 @@ valid(W) :-
     (observed(dna_match) -> once(related(W, you, thomas_bayes)) ; true ).
 ```
 
-However, as you noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
+However, as you may have noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
 We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with `W = nathaniel_bayes` for the query `valid(W)`.
 
 ## Attempt 2: Pyro
@@ -98,7 +97,7 @@ In Pyro, we instead define a probabilistic model, a guide, and an inference proc
 
 Here we simply model the generative process by sampling that Nathaniel is William's father with 60% probability.
 We then say the probability of a match depends on whether Nathaniel is the father (`torch.where`), using the sampled fact to select this probability.
-Finally, we provide our observation that there was in fact a DNA-match observed using `pyro.sample` with `obs=...`.
+Finally, we provide our observation that there was in fact a DNA match observed using `pyro.sample` with `obs=...`.
 Calling `model()` will result in one sample from the model.
 
 ```python fold-imports
@@ -119,7 +118,7 @@ def model():
 
 The `guide` is our current estimate of the posterior, i.e.,
 
-$$P(\text{Nathaniel is William's father} \mid \text{DNA match})$$
+$$\cpost{P(\text{Nathaniel is William's father} \mid \text{DNA match})}$$
 
 It samples the same latent variable as the model (`nathaniel_is_father`), but with a learnable probability `q` instead of the prior.
 
@@ -159,22 +158,22 @@ For reference, we can calculate the exact solution by applying Bayes' rule.
 First, we calculate the marginal probability of a match (the evidence) by summing over the hypotheses $h \in \{\text{Nathaniel}, \text{stranger}\}$ for William's father.
 
 $$
-P(\text{match}) = \sum_h P(h)\, P(\text{match} \mid h) = 0.6 \cdot 0.3 + 0.4 \cdot 0.01 = 0.184
+\cev{P(\text{match})} = \sum_h \cprior{P(h)}\, \clik{P(\text{match} \mid h)} = \cprior{0.6} \cdot \clik{0.3} + \cprior{0.4} \cdot \clik{0.01} = 0.184
 $$
 
 Then we get the posterior by plugging everything into Bayes' rule.
 
 $$
-P(\text{Nathaniel} \mid \text{match}) = \frac{P(\text{Nathaniel})\, P(\text{match} \mid \text{Nathaniel})}{P(\text{match})} = \frac{0.18}{0.184} \approx 0.978.
+\cpost{P(\text{Nathaniel} \mid \text{match})} = \frac{\cprior{P(\text{Nathaniel})}\, \clik{P(\text{match} \mid \text{Nathaniel})}}{\cev{P(\text{match})}} = \frac{0.18}{\cev{0.184}} \approx 0.978.
 $$
 
 We can see that our approximation using SVI is in the ballpark, but not terribly accurate.
-Since our guide (a Bernoulli with free parameter `q`) can represent the exact posterior, the gap is caused by poor optimization:
+Since our guide (a Bernoulli with free parameter `q`) can represent the exact posterior, the gap is caused by noisy gradients.
 There would be ways to mitigate this, but we won't consider them here for simplicity.
 
-## Summary
+## Conclusion
 
-In summary, we can think of Pyro as a declarative language, similar to Prolog, 
+We can think of Pyro as a declarative language, similar to Prolog, 
 that allows us to reason about uncertainty and gives us tools for inference.
-So far we treated SVI and the ELBO as a black box that "moves the guide closer to the posterior".
+So far we treated SVI and the ELBO as a black box that moves the guide closer to the posterior.
 In the next part we look at why we need them in the first place and what the ELBO actually optimizes.

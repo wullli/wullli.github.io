@@ -64,7 +64,7 @@
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>
 <g stroke-linejoin='round'>
-<g fill='#4a6fa5' stroke='#4a6fa5'>
+<g fill='#1a6abf' stroke='#1a6abf'>
 <g fill='#e8eef6'>
 <g stroke-width='1.5'>
 <path d='M457.5-150C457.5-203.84845 383.62816-247.5 292.5-247.5S127.5-203.84845 127.5-150S201.37184-52.5 292.5-52.5S457.5-96.15155 457.5-150ZM292.5-150'/>
@@ -73,9 +73,9 @@
 </g>
 <g transform='translate(189.76663,-103.9472)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-194.291411,-119.571611)scale(-1,-1)'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke='none'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <use x='-194.291411' y='-119.571611' xlink:href='#g16-81'/>
 </g>
 </g>
@@ -110,19 +110,31 @@
 <use x='-166.838054' y='-119.571611' xlink:href='#g10-18'/>
 <use x='-162.278072' y='-118.114581' xlink:href='#g9-105'/>
 <use x='-159.031701' y='-119.571611' xlink:href='#g12-59'/>
+</g>
+<g fill='black'>
+<g fill='#ad1457'>
 <use x='-153.095708' y='-119.571611' xlink:href='#g10-22'/>
 <use x='-147.242798' y='-118.114581' xlink:href='#g9-105'/>
-<use x='-143.996427' y='-119.571611' xlink:href='#g10-59'/>
-<use x='-139.679305' y='-119.571611' xlink:href='#g10-27'/>
-<use x='-133.780332' y='-123.096585' xlink:href='#g11-50'/>
-<use x='-134.128833' y='-117.003406' xlink:href='#g9-105'/>
-<use x='-129.410398' y='-119.571611' xlink:href='#g12-41'/>
+</g>
+</g>
+<g fill='#6a6a60'>
+<use x='-143.996438' y='-119.571611' xlink:href='#g10-59'/>
+</g>
+<g fill='black'>
+<g fill='#ad1457'>
+<use x='-139.679316' y='-119.571611' xlink:href='#g10-27'/>
+<use x='-133.780343' y='-123.096585' xlink:href='#g11-50'/>
+<use x='-134.128844' y='-117.003406' xlink:href='#g9-105'/>
+</g>
+</g>
+<g fill='#6a6a60'>
+<use x='-129.410421' y='-119.571611' xlink:href='#g12-41'/>
 </g>
 </g>
 </g>
 </g>
 </g>
-<g fill='#4a6fa5' stroke='#4a6fa5'>
+<g fill='#1a6abf' stroke='#1a6abf'>
 <g stroke-width='1.35'>
 <g stroke-dasharray='5.0,3.5' stroke-dashoffset='0.0'>
 <path d='M202.5-198.75C202.5-198.75 238.35434-168.31296 258.75-168.75S286.37593-204.64207 307.5-201S338.68385-162.57246 367.5-150S455.84999-136.275 440.19086-136.57803' fill='none'/>
@@ -136,10 +148,10 @@
 </g>
 </g>
 </g>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke-opacity='.45'>
 <g fill-opacity='.45'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke-opacity='.45'>
 <g fill-opacity='.45'>
 <path d='M261.75-168.75C261.75-167.09312 260.40688-165.75 258.75-165.75S255.75-167.09312 255.75-168.75S257.09312-171.75 258.75-171.75S261.75-170.40688 261.75-168.75ZM258.75-168.75' stroke='none'/>
@@ -156,10 +168,10 @@
 </g>
 </g>
 </g>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke-opacity='.45'>
 <g fill-opacity='.45'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke-opacity='.45'>
 <g fill-opacity='.45'>
 <path d='M310.5-201C310.5-199.34312 309.15688-198 307.5-198S304.5-199.34312 304.5-201S305.84312-204 307.5-204S310.5-202.65688 310.5-201ZM307.5-201' stroke='none'/>
@@ -176,10 +188,10 @@
 </g>
 </g>
 </g>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke-opacity='.45'>
 <g fill-opacity='.45'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke-opacity='.45'>
 <g fill-opacity='.45'>
 <path d='M370.5-150C370.5-148.34312 369.15688-147 367.5-147S364.5-148.34312 364.5-150S365.84312-153 367.5-153S370.5-151.65688 370.5-150ZM367.5-150' stroke='none'/>
@@ -196,8 +208,8 @@
 </g>
 </g>
 </g>
-<g fill='#4a6fa5'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
+<g fill='#1a6abf'>
 <path d='M208-198.75C208-195.7124 205.5376-193.25 202.5-193.25S197-195.7124 197-198.75S199.4624-204.25 202.5-204.25S208-201.7876 208-198.75ZM202.5-198.75' stroke='none'/>
 </g>
 <g transform='translate(202.5,-198.75)'>
@@ -208,8 +220,8 @@
 </g>
 </g>
 </g>
-<g fill='#4a6fa5'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
+<g fill='#1a6abf'>
 <path d='M461.34999-136.275C461.34999-133.2374 458.88759-130.775 455.84999-130.775C452.8124-130.775 450.34999-133.2374 450.34999-136.275C450.34999-139.31259 452.8124-141.775 455.84999-141.775C458.88759-141.775 461.34999-139.31259 461.34999-136.275ZM455.84999-136.275' stroke='none'/>
 </g>
 <g transform='translate(455.84999,-136.275)'>
@@ -222,9 +234,9 @@
 </g>
 <g transform='translate(195.02759,-214.46005)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-194.291411,-119.571611)scale(-1,-1)'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke='none'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <use x='-194.291411' y='-119.571611' xlink:href='#g6-113'/>
 <use x='-189.425592' y='-117.89043' xlink:href='#g3-105'/>
 <use x='-187.770997' y='-117.89043' xlink:href='#g3-110'/>
@@ -237,9 +249,9 @@
 </g>
 <g transform='translate(438.01237,-151.88788)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-194.291411,-119.571611)scale(-1,-1)'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <g stroke='none'>
-<g fill='#4a6fa5'>
+<g fill='#1a6abf'>
 <use x='-194.291411' y='-119.571611' xlink:href='#g6-113'/>
 <use x='-189.023459' y='-123.638893' xlink:href='#g4-3'/>
 </g>
@@ -247,8 +259,8 @@
 </g>
 </g>
 </g>
-<g fill='#d64a3c'>
-<g fill='#d64a3c'>
+<g fill='#b5402a'>
+<g fill='#b5402a'>
 <path d='M576.5-108.75C576.5-105.16011 573.58989-102.25 570-102.25S563.5-105.16011 563.5-108.75S566.41011-115.25 570-115.25S576.5-112.33989 576.5-108.75ZM570-108.75' stroke='none'/>
 </g>
 <g transform='translate(570.0,-108.75)'>
@@ -261,9 +273,9 @@
 </g>
 <g transform='translate(551.52838,-93.5712)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-194.291411,-119.571611)scale(-1,-1)'>
-<g fill='#d64a3c'>
+<g fill='#b5402a'>
 <g stroke='none'>
-<g fill='#d64a3c'>
+<g fill='#b5402a'>
 <use x='-194.291411' y='-119.571611' xlink:href='#g6-112'/>
 <use x='-188.783465' y='-119.571611' xlink:href='#g7-40'/>
 <use x='-184.515713' y='-119.571611' xlink:href='#g0-18'/>
@@ -298,7 +310,7 @@
 </g>
 </g>
 </g>
-<g fill='#d64a3c' stroke='#d64a3c'>
+<g fill='#222' stroke='#222'>
 <g stroke-width='1.35'>
 <path d='M471.07536-132.60411L554.77463-112.42088' fill='none'/>
 <g transform='matrix(-0.97209,-0.23438,0.23438,-0.97209,471.40346,-132.525)'>
@@ -317,18 +329,30 @@
 </g>
 <g transform='translate(485.55609,-139.625)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-194.291411,-119.571611)scale(-1,-1)'>
-<g fill='#d64a3c'>
+<g fill='#222'>
 <g stroke='none'>
-<g fill='#d64a3c'>
+<g fill='#222'>
 <use x='-194.291411' y='-119.571611' xlink:href='#g6-68'/>
 <use x='-185.179559' y='-117.89043' xlink:href='#g3-75'/>
 <use x='-180.208319' y='-117.89043' xlink:href='#g3-76'/>
 <use x='-175.566256' y='-119.571611' xlink:href='#g7-40'/>
+</g>
+<g fill='black'>
+<g fill='#1a6abf'>
 <use x='-171.298504' y='-119.571611' xlink:href='#g6-113'/>
 <use x='-166.030552' y='-123.638893' xlink:href='#g4-3'/>
-<use x='-158.2511' y='-119.571611' xlink:href='#g5-107'/>
-<use x='-149.533769' y='-119.571611' xlink:href='#g6-112'/>
-<use x='-144.025822' y='-119.571611' xlink:href='#g7-41'/>
+</g>
+</g>
+<g fill='#222'>
+<use x='-158.251103' y='-119.571611' xlink:href='#g5-107'/>
+</g>
+<g fill='black'>
+<g fill='#b5402a'>
+<use x='-149.533772' y='-119.571611' xlink:href='#g6-112'/>
+</g>
+</g>
+<g fill='#222'>
+<use x='-144.025832' y='-119.571611' xlink:href='#g7-41'/>
 </g>
 </g>
 </g>

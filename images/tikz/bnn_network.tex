@@ -16,11 +16,11 @@
     \draw[edge] (h\j) -- coordinate[pos=.5] (w\m) (y);
   }
   \foreach \i in {1,...,15} {
-    \node[text=accent, fill=white, inner sep=1pt] at ($(w\i) + (0, -20)$) {$\theta_{\i}$};
-    \gauss{($(w\i) + (0, 4)$)}{0}{1}{22}{11.6}
+    \node[fill=white, inner sep=1pt] at ($(w\i) + (0, -20)$) {$\theta_{\i}$};
+    \gauss[mprior]{($(w\i) + (0, 4)$)}{0}{1}{22}{11.6}
   }
 
   \node[caption] at (500, 406)
-    {Prior: every one of the 15 weights gets the same distribution $\mathcal{N}(0, 1)$};
+    {Prior: every one of the 15 weights gets the same distribution $\mathcal{N}(\cprior{0}, \cprior{1})$};
 \end{tikzpicture}
 \end{document}
