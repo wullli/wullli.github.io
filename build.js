@@ -154,10 +154,21 @@ function parseFrontMatter(src, file) {
   return { meta, body: src.slice(m[0].length) };
 }
 
+// {% include "name" %} → contents of that file, resolved next to the Markdown
+// file. Inserted verbatim, so wrap it in a code fence to show source code.
+function expandIncludes(body, file) {
+  return body.replace(/\{%\s*include\s+["']([^"']+)["']\s*%\}/g, (_, name) => {
+    const target = path.join(path.dirname(file), name);
+    if (!fs.existsSync(target)) throw new Error(file + ': include not found: ' + target);
+    return fs.readFileSync(target, 'utf8').replace(/\n+$/, '');
+  });
+}
+
 // Reads one Markdown file. Missing date/tags fall back to `defaults` (a series,
 // for its chapters).
 function loadMarkdown(file, defaults = {}) {
-  const { meta, body } = parseFrontMatter(fs.readFileSync(file, 'utf8'), file);
+  const { meta, body: raw } = parseFrontMatter(fs.readFileSync(file, 'utf8'), file);
+  const body = expandIncludes(raw, file);
   if (!meta.title) throw new Error(file + ': front matter needs "title"');
   const date = meta.date || defaults.date;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) {

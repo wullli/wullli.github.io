@@ -33,8 +33,17 @@
   <div class="paper">
   <header class="site-nav">
     <div class="container">
-      <span class="brand-name"><a href="../../index.html" class="brand-name-link"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup></span>
-      <a href="../../index.html" class="nav-avatar"><img src="../../images/me.jpeg" alt="Pascal Wullschleger"></a>
+      <div class="brand-name">
+        <a href="../../index.html" class="brand-name-link"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup>
+        <ul class="profile-menu" aria-label="Profiles">
+          <li><a href="https://www.linkedin.com/in/pascal-wullschleger-a20a35167/" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-linkedin"/></svg>LinkedIn</a></li>
+          <li><a href="https://scholar.google.com/citations?user=qDE_SUkAAAAJ&hl=en" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-scholar"/></svg>Google Scholar</a></li>
+          <li><a href="https://orcid.org/0009-0000-6174-6445" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-orcid"/></svg>ORCID</a></li>
+          <li><a href="https://aclanthology.org/people/pascal-wullschleger/" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-acl"/></svg>ACL Anthology</a></li>
+          <li><a href="https://github.com/wullli" target="_blank" rel="noopener"><svg width="14" height="14"><use href="#ic-github"/></svg>GitHub</a></li>
+        </ul>
+      </div>
+      <div class="avatar-slot"><a href="../../index.html" class="nav-avatar"><img src="../../images/me.jpeg" alt="Pascal Wullschleger"></a></div>
       <nav aria-label="Site navigation">
         <ul class="nav-links">
           <li><a href="../../index.html">About</a></li>
@@ -42,19 +51,16 @@
           <li><a href="../../blog.html" class="active">Blog</a></li>
           <li><a href="../../cv.html">CV</a></li>
         </ul>
-        <button id="theme-btn" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Switch to dark mode">●</button>
       </nav>
       <span class="brand-affiliations">
         <sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University<br>
         <sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT, HSLU
       </span>
-      <span class="nav-icons">
-        <a href="https://www.linkedin.com/in/pascal-wullschleger-a20a35167/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg width="14" height="14"><use href="#ic-linkedin"/></svg></a>
-        <a href="https://scholar.google.com/citations?user=qDE_SUkAAAAJ&hl=en" target="_blank" rel="noopener" aria-label="Google Scholar" title="Google Scholar"><svg width="14" height="14"><use href="#ic-scholar"/></svg></a>
-        <a href="https://orcid.org/0009-0000-6174-6445" target="_blank" rel="noopener" aria-label="ORCID" title="ORCID"><svg width="14" height="14"><use href="#ic-orcid"/></svg></a>
-        <a href="https://aclanthology.org/people/pascal-wullschleger/" target="_blank" rel="noopener" aria-label="ACL Anthology" title="ACL Anthology"><svg width="14" height="14"><use href="#ic-acl"/></svg></a>
-        <a href="https://github.com/wullli" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg width="14" height="14"><use href="#ic-github"/></svg></a>
-      </span>
+    </div>
+    <div class="header-rule">
+      <div class="header-settings">
+        <button id="theme-btn" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Switch to dark mode"></button>
+      </div>
     </div>
   </header>
 
@@ -76,7 +82,7 @@
     <a href="../../posts/pyro/02-svi.html">Stochastic Variational Inference and the Evidence Lower Bound</a> <span class="draft-badge">Draft</span>
   </li>
   <li>
-    <a href="../../posts/pyro/03-pyro-fundamentals.html">The Fundamentals of Pyro</a> <span class="draft-badge">Draft</span>
+    <a href="../../posts/pyro/03-bnn-in-pyro.html">Pyro Fundamentals on the Example of a Bayesian Neural Network</a> <span class="draft-badge">Draft</span>
   </li>
   <li>
     <a href="../../posts/pyro/04-unsupervised-irt.html">Modelling Unsupervised Item-Response Models with Pyro</a> <span class="draft-badge">Draft</span>
@@ -85,9 +91,8 @@
           <p class="series-all"><a href="../../posts/pyro/all.html">Read the whole series on one page</a></p>
         </details>
         <div class="post-body">
+<h2>Why a language for probabilities?</h2>
 <p>Initially the term &quot;probabilistic programming&quot; sounds vague, at least that was my experience.
-This article was intended as my way to learn the fundamentals of Pyro
-by documenting my understanding along the process and coming up with examples for myself.
 Why do we need a programming language for probabilities, can we not just do this in standard 
 languages already? It only started to make sense when I thought 
 about it as a declarative language (think Prolog), that lets you specify probabilistic processes and models
@@ -96,10 +101,19 @@ and allows you to perform inference and optimization automatically. </p>
 declarative tools for distributions, sampling procedures, evidence etc. and standard tools for optimization, 
 such that you can run arbitrary probabilistic models. In Prolog, we would define facts and rules, in Pyro we define a probabilistic process. 
 Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via e.g., stochastic variational inference (SVI). </p>
-<p>Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes&#39; brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) for an overview.</p>
-<p>William naming his eldest son Nathaniel shifts the odds from 1:1 to 1.5:1, giving a 0.6 probability that Nathaniel was William&#39;s father. Furthermore, a DNA test shows that you share a stretch of DNA with a known descendant of Joshua Bayes, which happens with probability 0.3 if you are related to him and 0.01 if you are not (for illustration, not realistic). This results in the probabilistic model depicted in (b).</p>
+<p>This article is my way of learning the fundamentals of Pyro,
+by documenting my understanding along the process and coming up with examples for myself.</p>
+<h2>A running example: are you related to Thomas Bayes?</h2>
+<p>Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes&#39; brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.</p>
 <p><img src="../../images/bayes_family_tree.svg" alt="Fictional family tree linking you to Thomas Bayes"></p>
-<p>You might define the prolog program as follows to get an answer to your question. Prolog would then backtrack to find you the solution that satisfies all constraints.</p>
+<p>William naming his eldest son Nathaniel shifts the odds from 1:1 to 1.5:1. Furthermore, a DNA test shows that you share a stretch of DNA with a known descendant of Joshua Bayes. This results in the probabilistic model depicted in (b), with the following numbers (for illustration, not realistic):</p>
+<ul>
+<li><strong>Prior:</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>Nathaniel is William’s father</mtext><mo stretchy="false">)</mo><mo>=</mo><mn>0.6</mn></mrow><annotation encoding="application/x-tex">P(\text{Nathaniel is William&#x27;s father}) = 0.6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">Nathaniel is William’s father</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.6</span></span></span></span></li>
+<li><strong>Match if related:</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>DNA match</mtext><mo>∣</mo><mtext>related</mtext><mo stretchy="false">)</mo><mo>=</mo><mn>0.3</mn></mrow><annotation encoding="application/x-tex">P(\text{DNA match} \mid \text{related}) = 0.3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">DNA match</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">related</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.3</span></span></span></span></li>
+<li><strong>Match if not related:</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>DNA match</mtext><mo>∣</mo><mtext>not related</mtext><mo stretchy="false">)</mo><mo>=</mo><mn>0.01</mn></mrow><annotation encoding="application/x-tex">P(\text{DNA match} \mid \text{not related}) = 0.01</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">DNA match</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">not related</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.01</span></span></span></span></li>
+</ul>
+<h2>Attempt 1: Prolog</h2>
+<p>You might define the Prolog program as follows to get an answer to your question. Prolog would then backtrack to find you the solution that satisfies all constraints.</p>
 <h4>Prolog Model</h4>
 <pre><code class="hljs language-prolog">world(nathaniel_bayes).
 world(stranger).
@@ -117,18 +131,15 @@ related(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">X</span>, 
 observed(dna_match).
 
 consistent(<span class="hljs-symbol">W</span>) :- world(<span class="hljs-symbol">W</span>), ( observed(dna_match) -&gt; once(related(<span class="hljs-symbol">W</span>, you, thomas_bayes)) ; true ).
-</code></pre><p>However, as you noticed, in plain prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
-We simply drop the probabilities and treat the DNA match as a hard fact, therefore prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>consistent(W)</code>.</p>
-<p>In Pyro, we would instead define the probabilistic model below. Here we simply model the generative process by sampling that Nathaniel is William&#39;s father with 60% probability.
+</code></pre><p>However, as you noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
+We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>consistent(W)</code>.</p>
+<h2>Attempt 2: Pyro</h2>
+<p>In Pyro, we instead define a probabilistic model, a guide, and an inference procedure.</p>
+<h3>The generative model</h3>
+<p>Here we simply model the generative process by sampling that Nathaniel is William&#39;s father with 60% probability.
 We then say the probability of a match depends on whether Nathaniel is the father (<code>torch.where</code>), using the sampled fact to select this probability.
-We then provide our observation that there was in fact a DNA-match observed using <code>pyro.sample</code>.
-Calling <code>model()</code> will result in one sample from the model.
-The <code>guide</code> here is our current estimate of the posterior, i.e.,</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>Nathaniel is William’s father</mtext><mo>∣</mo><mtext>DNA match</mtext><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(\text{Nathaniel is William&#x27;s father} \mid \text{DNA match})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">Nathaniel is William’s father</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">DNA match</span></span><span class="mclose">)</span></span></span></span></span></p>
-<p>Using SVI, we iteratively update the guide to maximize the evidence lower bound (ELBO), which moves it closer to the true posterior. In this example we could calculate the solution
-analytically, but this is not possible in some complex models. Note that here we explicitly define how we infer
-our posterior as opposed to implicitly backtracking in Prolog.</p>
-<h4>Pyro Model</h4>
+Finally, we provide our observation that there was in fact a DNA-match observed using <code>pyro.sample</code> with <code>obs=...</code>.
+Calling <code>model()</code> will result in one sample from the model.</p>
 <div class="code-fold"><details><summary>6 import lines</summary><pre><code class="hljs language-python"><span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">import</span> pyro
 <span class="hljs-keyword">import</span> pyro.distributions <span class="hljs-keyword">as</span> dist
@@ -139,31 +150,44 @@ our posterior as opposed to implicitly backtracking in Prolog.</p>
     nathaniel = pyro.sample(<span class="hljs-string">&quot;nathaniel_is_father&quot;</span>, dist.Bernoulli(<span class="hljs-number">0.6</span>))
     p_match = torch.where(nathaniel.<span class="hljs-built_in">bool</span>(), torch.tensor(<span class="hljs-number">0.3</span>), torch.tensor(<span class="hljs-number">0.01</span>))
     pyro.sample(<span class="hljs-string">&quot;dna_match&quot;</span>, dist.Bernoulli(p_match), obs=torch.tensor(<span class="hljs-number">1.0</span>))
-
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">guide</span>():
+</code></pre></div>
+<h3>The guide</h3>
+<p>The <code>guide</code> is our current estimate of the posterior, i.e.,</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>Nathaniel is William’s father</mtext><mo>∣</mo><mtext>DNA match</mtext><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(\text{Nathaniel is William&#x27;s father} \mid \text{DNA match})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">Nathaniel is William’s father</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">DNA match</span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>It samples the same latent variable as the model (<code>nathaniel_is_father</code>), but with a learnable probability <code>q</code> instead of the prior.</p>
+<pre><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">guide</span>():
     q = pyro.param(<span class="hljs-string">&quot;q&quot;</span>, torch.tensor(<span class="hljs-number">0.5</span>), constraint=constraints.unit_interval)
     pyro.sample(<span class="hljs-string">&quot;nathaniel_is_father&quot;</span>, dist.Bernoulli(q))
-
-pyro.clear_param_store()
+</code></pre><h3>Inference with SVI</h3>
+<p>Using SVI, we iteratively update the guide to maximize the evidence lower bound (ELBO), which moves it closer to the true posterior.
+Note that here we explicitly define how we infer our posterior as opposed to implicitly backtracking in Prolog.
+In this example we could calculate the solution analytically, but this is not possible in some complex models.</p>
+<pre><code class="hljs language-python">pyro.clear_param_store()
 svi = SVI(model, guide, Adam({<span class="hljs-string">&quot;lr&quot;</span>: <span class="hljs-number">0.01</span>}), Trace_ELBO(max_plate_nesting=<span class="hljs-number">0</span>))
 <span class="hljs-keyword">for</span> step <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20_000</span>):
     loss = svi.step()
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;P(Nathaniel is father | DNA match) = <span class="hljs-subst">{pyro.param(<span class="hljs-string">&#x27;q&#x27;</span>).item():<span class="hljs-number">.3</span>f}</span>&quot;</span>)
-</code></pre></div>
-<h4>Output</h4>
+</code></pre><h4>Output</h4>
 <pre><code class="hljs language-bash">P(Nathaniel is father | DNA match) = 0.985
 </code></pre><p>Although it would be possible to get the exact solution with Pyro, the example shows standard SVI for clarity.
 Here, we iteratively step towards better posteriors (q) using gradient descent with an Adam optimizer. Due to noisy gradients,
-our estimate for the posterior will still be an approximation and not exact. However, for reference, 
-we can calculate the exact solution by applying Bayes&#39; rule as follows.</p>
-<p>First, we calculate the marginal probability of a match (the evidence) by summing over the hypotheses <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>∈</mo><mo stretchy="false">{</mo><mtext>Nathaniel</mtext><mo separator="true">,</mo><mtext>stranger</mtext><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">h \in \{\text{Nathaniel}, \text{stranger}\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7335em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">stranger</span></span><span class="mclose">}</span></span></span></span> for William&#39;s father.</p>
+our estimate for the posterior will still be an approximation and not exact.</p>
+<h2>Checking against the exact answer</h2>
+<p>For reference, we can calculate the exact solution by applying Bayes&#39; rule.
+First, we calculate the marginal probability of a match (the evidence) by summing over the hypotheses <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>∈</mo><mo stretchy="false">{</mo><mtext>Nathaniel</mtext><mo separator="true">,</mo><mtext>stranger</mtext><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">h \in \{\text{Nathaniel}, \text{stranger}\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7335em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">stranger</span></span><span class="mclose">}</span></span></span></span> for William&#39;s father.</p>
 <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>match</mtext><mo stretchy="false">)</mo><mo>=</mo><munder><mo>∑</mo><mi>h</mi></munder><mi>P</mi><mo stretchy="false">(</mo><mi>h</mi><mo stretchy="false">)</mo><mtext> </mtext><mi>P</mi><mo stretchy="false">(</mo><mtext>match</mtext><mo>∣</mo><mi>h</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0.6</mn><mo>⋅</mo><mn>0.3</mn><mo>+</mo><mn>0.4</mn><mo>⋅</mo><mn>0.01</mn><mo>=</mo><mn>0.184</mn></mrow><annotation encoding="application/x-tex">P(\text{match}) = \sum_h P(h)\, P(\text{match} \mid h) = 0.6 \cdot 0.3 + 0.4 \cdot 0.01 = 0.184</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">match</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.3521em;vertical-align:-1.3021em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.05em;"><span style="top:-1.8479em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">h</span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.3021em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord mathnormal">h</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">match</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.6</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.4</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.01</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.184</span></span></span></span></span>
 <p>Then we get the posterior by plugging everything into Bayes&#39; rule.</p>
 <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>Nathaniel</mtext><mo>∣</mo><mtext>match</mtext><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>Nathaniel</mtext><mo stretchy="false">)</mo><mtext> </mtext><mi>P</mi><mo stretchy="false">(</mo><mtext>match</mtext><mo>∣</mo><mtext>Nathaniel</mtext><mo stretchy="false">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>match</mtext><mo stretchy="false">)</mo></mrow></mfrac><mo>=</mo><mfrac><mn>0.18</mn><mn>0.184</mn></mfrac><mo>≈</mo><mn>0.978.</mn></mrow><annotation encoding="application/x-tex">P(\text{Nathaniel} \mid \text{match}) = \frac{P(\text{Nathaniel})\, P(\text{match} \mid \text{Nathaniel})}{P(\text{match})} = \frac{0.18}{0.184} \approx 0.978.</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">match</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">match</span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">match</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord text"><span class="mord">Nathaniel</span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.184</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.18</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0.978.</span></span></span></span></span>
-<p>We can see that our approximation using SVI is in the ballpark, but not terribly accurate. There would be ways to mitigate this, 
-but we wont consider them here for simplicity. In summary, we can think of Pyro as a declarative language, similar to Prolog, 
-that allows us to reason about uncertainty and gives us tools for inference.</p>
+<p>We can see that our approximation using SVI is in the ballpark, but not terribly accurate.
+Since our guide (a Bernoulli with free parameter <code>q</code>) can represent the exact posterior, the gap is not a limitation of the guide, but purely optimization noise:
+the ELBO gradients for a discrete latent variable are estimated from samples, so <code>q</code> keeps jittering around the optimum instead of settling on it.
+There would be ways to mitigate this (e.g., a smaller learning rate or averaging <code>q</code> over the last steps), but we won&#39;t consider them here for simplicity.</p>
+<h2>Summary</h2>
+<p>In summary, we can think of Pyro as a declarative language, similar to Prolog, 
+that allows us to reason about uncertainty and gives us tools for inference.
+So far we treated SVI and the ELBO as a black box that &quot;moves the guide closer to the posterior&quot;.
+In the next part we look at why we need them in the first place and what the ELBO actually optimizes.</p>
 
         </div>
         <nav class="series-nav" aria-label="Chapter navigation">
@@ -172,6 +196,16 @@ that allows us to reason about uncertainty and gives us tools for inference.</p>
       </article>
     </div>
   </main>
+
+  <footer>
+    <div class="container profile-links">
+      <a href="https://www.linkedin.com/in/pascal-wullschleger-a20a35167/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg width="17" height="17"><use href="#ic-linkedin"/></svg></a>
+      <a href="https://scholar.google.com/citations?user=qDE_SUkAAAAJ&hl=en" target="_blank" rel="noopener" aria-label="Google Scholar" title="Google Scholar"><svg width="17" height="17"><use href="#ic-scholar"/></svg></a>
+      <a href="https://orcid.org/0009-0000-6174-6445" target="_blank" rel="noopener" aria-label="ORCID" title="ORCID"><svg width="17" height="17"><use href="#ic-orcid"/></svg></a>
+      <a href="https://aclanthology.org/people/pascal-wullschleger/" target="_blank" rel="noopener" aria-label="ACL Anthology" title="ACL Anthology"><svg width="17" height="17"><use href="#ic-acl"/></svg></a>
+      <a href="https://github.com/wullli" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg width="17" height="17"><use href="#ic-github"/></svg></a>
+    </div>
+  </footer>
   </div>
 
 </body>
