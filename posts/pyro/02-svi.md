@@ -219,4 +219,8 @@ $$
 Since we differentiate with respect to our parameters, epsilon is considered fixed and we don't need to differentiate through any sampling.
 
 
-
+## Conclusion
+We discussed why exact Bayesian inference does not work in practice due to difficulties with calculating or approximating integrals.
+Subsequently, we've established alternatives to exact inference, such as SVI with ELBO and have shown how
+we can make this computationally feasible. In the next part, we will learn the fundamentals of Pyro by implementing the example BNN
+step-by-step.
