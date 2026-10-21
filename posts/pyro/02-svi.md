@@ -200,7 +200,7 @@ $$
 We've established that we cannot calculate the expectation in closed-form. An easy way to calculate it is simply sampling weights $\boldsymbol{\theta}$ from $\cq{q}$, evaluating $\log \clik{p(\mathbf{x} \mid \boldsymbol{\theta})}$ for each sample and
 then taking the average. However, sampling is a problem, since we cannot differentiate through it, so we cannot calculate the gradient anymore.
 Think of a discrete distribution over classes *apple* and *pear*. While we might have a probability for each of the classes,
-when sampling we simply pick one at random according to these probabilities. This means the outcome as a function of the probabilities is a step function, which has a derivative of 0 almost everywhere and is undefined at the jumps.
+when sampling we simply pick one at random according to these probabilities. This means the outcome as a function of the probabilities is a step function, which has a derivative of 0 almost everywhere and is undefined at the steps.
 
 Now there is a neat trick that people use to circumvent this: A standard normal $\mathcal{N}(0, 1)$ scaled by $\cpar{\sigma_i}$ and shifted by $\cpar{\mu_i}$
 will be distributed $\mathcal{N}(\cpar{\mu_i}, \cpar{\sigma_i^2})$. Leveraging this property is called the reparameterization trick. 
