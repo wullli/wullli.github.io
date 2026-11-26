@@ -107,6 +107,18 @@ function formatVenueAPA(tags) {
     if (pages) b += ' (pp. ' + esc(pages.replace(/--/, '–')) + ')';
     return b + '.';
   }
+  var eprint  = clean(tags.EPRINT);
+  var archive = clean(tags.ARCHIVEPREFIX);
+  if (eprint && archive) {
+    var doi = clean(tags.DOI) ||
+      (/^arxiv$/i.test(archive) ? '10.48550/arXiv.' + eprint : '');
+    var a = esc(archive) + '.';
+    if (doi) {
+      var href = 'https://doi.org/' + doi;
+      a += ' <a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(href) + '</a>';
+    }
+    return a;
+  }
   if (note) return esc(note) + '.';
   return '';
 }
@@ -145,7 +157,7 @@ function highlightBib(entry) {
 }
 
 /* ── Reconstruct BibTeX from parsed entry ── */
-var BIB_SKIP = ['SCHOLAR', 'CITATIONS', 'CODE', 'ANTHOLOGY', 'PDF', 'SELECTED'];
+var BIB_SKIP = ['SCHOLAR', 'CITATIONS', 'CODE', 'ANTHOLOGY', 'PDF', 'SELECTED', 'BADGE'];
 
 function toBibTeX(entry) {
   var fields = Object.entries(entry.entryTags)
@@ -158,6 +170,14 @@ function toBibTeX(entry) {
     })
     .join(',\n');
   return '@' + entry.entryType + '{' + entry.citationKey + ',\n' + fields + '\n}';
+}
+
+/* ── Free-text badges: badge = {Preprint, Oral} ── */
+function renderBadges(tags) {
+  return (clean(tags.BADGE) || '').split(',')
+    .map(function(b) { return b.trim(); })
+    .filter(Boolean)
+    .map(function(b) { return '<span class="pub-badge">' + esc(b) + '</span>'; });
 }
 
 /* ── Single entry renderer (shared by publications.html and index.html) ── */
@@ -189,6 +209,7 @@ function renderEntry(entry, extraLinks, num) {
   if (data)    links.push('<a href="' + esc(data) + '" class="pub-link" target="_blank" rel="noopener">Data</a>');
   if (scholar) links.push('<a href="' + esc(scholar) + '" class="pub-link" target="_blank" rel="noopener">Scholar</a>');
   links.push('<button class="bibtex-toggle" onclick="toggleBibtex(this)" aria-expanded="false">BibTeX</button>');
+  links = links.concat(renderBadges(t));
   if (citations) links.push('<span class="cite-count">' + esc(citations) + ' citation' + (citations !== '1' ? 's' : '') + '</span>');
 
   var numCol = num != null ? '  <span class="pub-num">[' + num + ']</span>\n' : '';

@@ -140,8 +140,8 @@ function renderRecentPubs(ents) {
           : esc(absTitle);
         const absHeading =
           '    <p class="pub-abstract-heading"><span class="pub-abstract-title">' + absTitleLinked +
-          '</span> <span class="pub-abstract-label">&middot; Abstract</span></p>\n' +
-          '    <p class="pub-abstract">' + esc(abs) + '</p>\n';
+          '</span></p>\n' +
+          '    <p class="pub-abstract"><span class="pub-abstract-label">Abstract.</span> ' + esc(abs) + '</p>\n';
         let h = renderEntry(e, linkMap[e.citationKey], num);
         h = h.replace(/    <p class="pub-title">[\s\S]*?<\/p>\n/, absHeading);
         return h;
