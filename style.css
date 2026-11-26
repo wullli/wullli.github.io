@@ -410,6 +410,11 @@ h3 {
   font-family: var(--font-mono);
   font-size: 0.88em;
   font-weight: 700;
+  text-decoration: none;
+}
+
+a.cite-ref:hover {
+  text-decoration: underline;
 }
 
 /* === About page === */

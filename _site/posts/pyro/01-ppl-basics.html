@@ -81,17 +81,17 @@
     <a href="../../posts/pyro/03-bnn-in-pyro.html">Pyro Fundamentals</a> <span class="draft-badge">Draft</span>
   </li>
   <li>
-    <a href="../../posts/pyro/04-unsupervised-irt.html">Unsupervised Item-Response Models with Pyro</a> <span class="draft-badge">Draft</span>
+    <a href="../../posts/pyro/04-unsupervised-irt.html">Unsupervised Item Response Models with Pyro</a> <span class="draft-badge">Draft</span>
   </li>
 </ol>
           <p class="series-all"><a href="../../posts/pyro/all.html">Read the whole series on one page</a></p>
         </details>
         <div class="post-body">
 <h2>Why a language for probabilities?</h2>
-<p>Initially the term &quot;probabilistic programming&quot; sounds vague, at least that was my experience.
-Why do we need a programming language for probabilities, can we not just do this in standard 
+<p>Initially the term &quot;probabilistic programming&quot; sounds vague. At least, that was my experience.
+Why do we need a programming language for probabilities? Can we not just do this in standard 
 languages already? It only started to make sense when I thought 
-about it as a declarative language (think Prolog), that lets you specify probabilistic processes and models
+about it as a declarative language (think Prolog), which lets you specify probabilistic processes and models
 and allows you to perform inference and optimization automatically. </p>
 <p>In essence, it just gives you the 
 declarative tools for distributions, sampling procedures, evidence etc. and standard tools for optimization, 
@@ -99,9 +99,9 @@ such that you can run arbitrary probabilistic models. In Prolog, we would define
 while in Pyro we define a probabilistic model.
 Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via, e.g., stochastic variational inference (SVI). </p>
 <p>This article is my way of learning the fundamentals of Pyro,
-by documenting my understanding along the process and coming up with examples for myself.</p>
+by documenting my understanding along the way and coming up with examples for myself.</p>
 <h2>Example: Are you related to Thomas Bayes?</h2>
-<p>Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is the son of Thomas Bayes&#39; brother Nathaniel, or descended from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.</p>
+<p>Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is the son of Thomas Bayes&#39; brother Nathaniel, or descended from another Bayes family. Still, you have estimates for how likely the relationship is: Let&#39;s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.</p>
 <p><img src="../../images/bayes_family_tree.svg" alt="Fictional family tree linking you to Thomas Bayes"></p>
 <p>William named his eldest son Nathaniel, which hints at a family connection and shifts the odds from 1:1 to 1.5:1. Furthermore, a DNA test shows that you share a stretch of DNA with a known descendant of Joshua Bayes. This results in the probabilistic model depicted in (b), with the following numbers (for illustration, not realistic):</p>
 <ul>
@@ -114,7 +114,7 @@ by documenting my understanding along the process and coming up with examples fo
 We can start by declaring the two possible outcomes (worlds): Nathaniel is William&#39;s father or he is a stranger.</p>
 <pre><code class="hljs language-prolog">world(nathaniel_bayes).
 world(stranger).
-</code></pre><p>We define the predicates that hold in our example, that is we know that Thomas and Nathaniel are siblings in any world (_), that William is your father in any world
+</code></pre><p>We define the predicates that hold in our example, that is, we know that Thomas and Nathaniel are siblings in any world (_), that William is your father in any world
 and that there are different possible fathers for William (worlds <code>W</code>).</p>
 <pre><code class="hljs language-prolog">parent(<span class="hljs-symbol">_</span>, joshua_bayes, thomas_bayes).
 parent(<span class="hljs-symbol">_</span>, joshua_bayes, nathaniel_bayes).
@@ -129,14 +129,14 @@ ancestor(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">A</span>,
 <pre><code class="hljs language-prolog">observed(dna_match).
 </code></pre><p>Now we can check which world is valid. Initially we need to define that <code>W</code> is actually a world.
 Then we define a rule to decide what valid means.
-Here <code>-&gt;</code> is indicating an if-then-else. So if we observe a dna_match, world <code>W</code> is valid
+Here <code>-&gt;</code> indicates an if-then-else. So if we observe a <code>dna_match</code>, world <code>W</code> is valid
 if in this world you are related to Thomas Bayes. In general, <code>related</code> succeeds once for every common ancestor it finds, i.e., possibly several times
 per world; the <code>once</code> statement stops after the first proof, so each valid world is returned only once.</p>
 <pre><code class="hljs language-prolog">valid(<span class="hljs-symbol">W</span>) :- 
     world(<span class="hljs-symbol">W</span>), 
     (observed(dna_match) -&gt; once(related(<span class="hljs-symbol">W</span>, you, thomas_bayes)) ; true ).
 </code></pre><p>However, as you may have noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
-We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>valid(W)</code>.</p>
+We simply drop the probabilities and treat the DNA match as a hard fact. Therefore, Prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>valid(W)</code>.</p>
 <h2>Attempt 2: Pyro</h2>
 <p>In Pyro, we instead define a probabilistic model, a guide, and an inference procedure.</p>
 <h3>The generative model</h3>
@@ -198,12 +198,11 @@ In the next part we look at why we need them in the first place and what the ELB
           <div class="post-author-text">
             <span><a href="../../index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup></span>
             <span class="post-author-aff"><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University</span>
-            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT, HSLU</span>
+            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT (HSLU)</span>
           </div>
         </aside>
         <footer class="ai-statement">
-<p><em><p style="text-align: center;"><em>AI statement</em></em> </p>
-<p>Content and code were written by myself. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p></p>
+<p style="text-align: center;"><strong>AI statement</strong></p><p>Content and code were written by me. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p>
         </footer>
         <nav class="series-nav" aria-label="Chapter navigation">
   <a class="next" href="../../posts/pyro/02-svi.html"><span class="series-nav-label">Next &rarr;</span>Variational Inference</a>

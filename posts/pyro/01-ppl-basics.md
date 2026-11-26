@@ -8,10 +8,10 @@ draft: true
 
 ## Why a language for probabilities?
 
-Initially the term "probabilistic programming" sounds vague, at least that was my experience.
-Why do we need a programming language for probabilities, can we not just do this in standard 
+Initially the term "probabilistic programming" sounds vague. At least, that was my experience.
+Why do we need a programming language for probabilities? Can we not just do this in standard 
 languages already? It only started to make sense when I thought 
-about it as a declarative language (think Prolog), that lets you specify probabilistic processes and models
+about it as a declarative language (think Prolog), which lets you specify probabilistic processes and models
 and allows you to perform inference and optimization automatically. 
 
 In essence, it just gives you the 
@@ -21,11 +21,11 @@ while in Pyro we define a probabilistic model.
 Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via, e.g., stochastic variational inference (SVI). 
 
 This article is my way of learning the fundamentals of Pyro,
-by documenting my understanding along the process and coming up with examples for myself.
+by documenting my understanding along the way and coming up with examples for myself.
 
 ## Example: Are you related to Thomas Bayes?
 
-Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is the son of Thomas Bayes' brother Nathaniel, or descended from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.
+Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is the son of Thomas Bayes' brother Nathaniel, or descended from another Bayes family. Still, you have estimates for how likely the relationship is: Let's assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.
 
 ![Fictional family tree linking you to Thomas Bayes](images/bayes_family_tree.svg)
 
@@ -45,7 +45,7 @@ world(nathaniel_bayes).
 world(stranger).
 ```
 
-We define the predicates that hold in our example, that is we know that Thomas and Nathaniel are siblings in any world (_), that William is your father in any world
+We define the predicates that hold in our example, that is, we know that Thomas and Nathaniel are siblings in any world (_), that William is your father in any world
 and that there are different possible fathers for William (worlds `W`).
 
 ```prolog
@@ -76,7 +76,7 @@ observed(dna_match).
 
 Now we can check which world is valid. Initially we need to define that `W` is actually a world.
 Then we define a rule to decide what valid means.
-Here `->` is indicating an if-then-else. So if we observe a dna_match, world `W` is valid
+Here `->` indicates an if-then-else. So if we observe a `dna_match`, world `W` is valid
 if in this world you are related to Thomas Bayes. In general, `related` succeeds once for every common ancestor it finds, i.e., possibly several times
 per world; the `once` statement stops after the first proof, so each valid world is returned only once.
 
@@ -87,7 +87,7 @@ valid(W) :-
 ```
 
 However, as you may have noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
-We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with `W = nathaniel_bayes` for the query `valid(W)`.
+We simply drop the probabilities and treat the DNA match as a hard fact. Therefore, Prolog will respond with `W = nathaniel_bayes` for the query `valid(W)`.
 
 ## Attempt 2: Pyro
 

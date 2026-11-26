@@ -11,7 +11,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="profile">
   <meta property="og:title" content="Pascal Wullschleger">
-  <meta property="og:description" content="PhD Student in NLP and machine learning at Maynooth University and HSLU. Works on NLP dataset evaluation, taxonomies, inter-rater reliability, and item response models.">
+  <meta property="og:description" content="PhD student in NLP and machine learning at Maynooth University and HSLU. Works on NLP dataset evaluation, taxonomies, inter-rater reliability, and item response models.">
   <meta property="og:url" content="https://wullli.github.io/">
   <meta property="og:image" content="https://wullli.github.io/images/me.jpeg">
   <meta property="profile:first_name" content="Pascal">
@@ -46,7 +46,7 @@
       },
       {
         "@type": "Organization",
-        "name": "Applied AI Lab, Lucerne School of IT, HSLU",
+        "name": "Applied AI Lab, Lucerne School of IT (HSLU)",
         "url": "https://www.hslu.ch/en/lucerne-school-of-information-technology/"
       }
     ],
@@ -103,7 +103,7 @@
       </nav>
       <span class="brand-affiliations">
         <sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University<br>
-        <sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT, HSLU
+        <sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT (HSLU)
       </span>
     </div>
     <div class="header-rule">
@@ -119,10 +119,11 @@
       <!-- <h1>About</h1> -->
       <!---->
       <p>
-        I am a part-time PhD Student working on evaluation of NLP datasets using tools such as taxonomies, 
-		inter-rater reliability statistics and item response models. In <span class="cite-ref">[3]</span> we investigate how to automatically evaluate taxonomies using their intrinsic properties.
-		In <span class="cite-ref">[2]</span>, we systematically compare distances that can be used to calculate annotator agreement in open-ended biomedical annotations. More recently, I have been working 
-		on leveraging item-response models to inform model training on the basis of annotations <span class="cite-ref">[1]</span>.
+        I am a part-time PhD student working on evaluation of NLP datasets using tools such as taxonomies, 
+		inter-rater reliability statistics and item response models. In <a class="cite-ref" data-cite="wullschleger-etal-2026-reference"></a>, we investigate how to automatically evaluate taxonomies using their intrinsic properties.
+		In <a class="cite-ref" data-cite="wullschleger2026consensusmeasuresunstructuredbiomedical"></a>, we systematically compare distances that can be used to calculate annotator agreement in open-ended biomedical annotations. 
+		More recently, I have been working 
+		on leveraging item response models to infer labels from crowd data and to inform model training <a class="cite-ref" data-cite="wullschleger2026learningcrowdsunsuperviseditem"></a>.
       </p>
       <!-- <p> -->
       <!--   I am also interested in deep learning applications to structured clinical data&#8202;&mdash;&#8202;in -->
@@ -177,6 +178,12 @@
           return diff !== 0 ? diff : a.i - b.i;
         });
         bibEntries = indexed.map(function(x) { return x.e; });
+        var citeNums = citeNumbers(bibEntries);
+        document.querySelectorAll('.cite-ref[data-cite]').forEach(function(a) {
+          var ref = citeRefAttrs(a.getAttribute('data-cite'), citeNums);
+          a.href = ref.href;
+          a.textContent = ref.text;
+        });
         var top3 = bibEntries.slice(0, 3);
         var abstractShown = false;
         document.getElementById('recent-pubs').innerHTML = top3.map(function(e, i) {

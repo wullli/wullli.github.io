@@ -71,15 +71,15 @@ def model(x: torch.Tensor, y: torch.Tensor | None = None):
 What initially might be confusing is the `pyro.sample` here. The `expand` function here is necessary,
 since the prior is univariate and would return just one dimension when sampling. However, 
 we want our weights to be a matrix, where each element is drawn independently from this prior.
-The `expand` just allows us to add batch dimensions for the sampling. The `to_event(2)` denotes, that we
+The `expand` just allows us to add batch dimensions for the sampling. The `to_event(2)` denotes that we
 will treat the sampled weight matrix as a single random variable subsequently (joint), with the 
 argument indicating how many of the dimensions should be considered event instead of batch dimensions.
 
-Subsequently the logits are calculated using the sampled parameters and a output is sampled using
-a Bernoulli distribution with the logits as its parameters. If an observation is given, the outputs 
+Subsequently, the logits are calculated using the sampled parameters and an output is sampled using
+a Bernoulli distribution with the logits as its parameter. If an observation is given, the outputs 
 are not actually sampled and the `pyro.sample("y", dist.Bernoulli(logits=logits), obs=y)`
-will simply return the observation `y`. However, in the latter case, the statement will have the effect of marking this node
-in the underlying bayesian network Pyro generates as observed and calculating how likely the observation is given
+will simply return the observation `y`. However, in that case, the statement will have the effect of marking this node
+in the underlying Bayesian network Pyro generates as observed and calculating how likely the observation is given
 our current distribution (Bernoulli of the logits). This score is saved in the background and it corresponds to the likelihood of the evidence lower bound (ELBO)
 as previously introduced ($$$$).
 

@@ -635,6 +635,12 @@ fs.writeFileSync(path.join(outDir, 'publications.html'), pubsHtml);
 // Patch index.html
 let indexHtml = fs.readFileSync(path.join(outDir, 'index.html'), 'utf8');
 indexHtml = inject(indexHtml, '<!-- PUBS_RECENT_START -->', '<!-- PUBS_RECENT_END -->', renderRecentPubs(sorted));
+const citeNums = citeNumbers(sorted);
+indexHtml = indexHtml.replace(/<a class="cite-ref" data-cite="([^"]+)"><\/a>/g, (_, key) => {
+  if (!citeNums[key]) throw new Error('index.html cites unknown publication key: ' + key);
+  const ref = citeRefAttrs(key, citeNums);
+  return '<a class="cite-ref" data-cite="' + esc(key) + '" href="' + esc(ref.href) + '">' + esc(ref.text) + '</a>';
+});
 // Show more-link (build makes it immediately visible)
 indexHtml = indexHtml.replace(
   /(<a href="publications\.html" class="more-link" id="more-link") style="display:none"/,

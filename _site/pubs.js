@@ -180,6 +180,24 @@ function renderBadges(tags) {
     .map(function(b) { return '<span class="pub-badge">' + esc(b) + '</span>'; });
 }
 
+/* ── Inline citations: <a class="cite-ref" data-cite="bibkey"></a> ── */
+function pubAnchor(key) {
+  return 'pub-' + key;
+}
+
+function citeNumbers(sortedEntries) {
+  var nums = {};
+  sortedEntries.forEach(function(e, i) { nums[e.citationKey] = i + 1; });
+  return nums;
+}
+
+function citeRefAttrs(key, nums) {
+  return {
+    href: 'publications.html#' + pubAnchor(key),
+    text: '[' + (nums[key] || '?') + ']'
+  };
+}
+
 /* ── Single entry renderer (shared by publications.html and index.html) ── */
 function renderEntry(entry, extraLinks, num) {
   var t     = entry.entryTags;
@@ -214,7 +232,7 @@ function renderEntry(entry, extraLinks, num) {
 
   var numCol = num != null ? '  <span class="pub-num">[' + num + ']</span>\n' : '';
   return [
-    '<div class="pub-entry">',
+    '<div class="pub-entry" id="' + esc(pubAnchor(entry.citationKey)) + '">',
     numCol + '  <div class="pub-body">',
     '    <p class="pub-title">' + titleHtml + '</p>',
     '    <p class="pub-authors">' + authors + '</p>',

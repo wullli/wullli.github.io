@@ -68,19 +68,19 @@
         <div class="blog-tags"><span class="blog-tag">pyro</span><span class="blog-tag">probabilistic programming</span><span class="blog-tag">bayesian inference</span></div>
         <div class="post-body">
 <h2>Why a language for probabilities?</h2>
-<p>Initially the term &quot;probabilistic programming&quot; sounds vague, at least that was my experience.
-Why do we need a programming language for probabilities, can we not just do this in standard 
+<p>Initially the term &quot;probabilistic programming&quot; sounds vague. At least, that was my experience.
+Why do we need a programming language for probabilities? Can we not just do this in standard 
 languages already? It only started to make sense when I thought 
-about it as a declarative language (think Prolog), that lets you specify probabilistic processes and models
+about it as a declarative language (think Prolog), which lets you specify probabilistic processes and models
 and allows you to perform inference and optimization automatically. </p>
 <p>In essence, it just gives you the 
 declarative tools for distributions, sampling procedures, evidence etc. and standard tools for optimization, 
 such that you can run arbitrary probabilistic models. In Prolog, we would define facts and rules, in Pyro we define a probabilistic process. 
 Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via e.g., stochastic variational inference (SVI). </p>
 <p>Writing this series of posts was my way of learning the fundamentals of Pyro,
-by documenting my understanding along the process and coming up with examples for myself.</p>
+by documenting my understanding along the way and coming up with examples for myself.</p>
 <h2>A running example: are you related to Thomas Bayes?</h2>
-<p>Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes&#39; brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.</p>
+<p>Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes&#39; brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let&#39;s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.</p>
 <p><img src="../images/bayes_family_tree.svg" alt="Fictional family tree linking you to Thomas Bayes"></p>
 <p>William naming his eldest son Nathaniel shifts the odds from 1:1 to 1.5:1. Furthermore, a DNA test shows that you share a stretch of DNA with a known descendant of Joshua Bayes. This results in the probabilistic model depicted in (b), with the following numbers (for illustration, not realistic):</p>
 <ul>
@@ -107,14 +107,14 @@ related(<span class="hljs-symbol">W</span>, <span class="hljs-symbol">X</span>, 
 observed(dna_match).
 
 consistent(<span class="hljs-symbol">W</span>) :- world(<span class="hljs-symbol">W</span>), ( observed(dna_match) -&gt; once(related(<span class="hljs-symbol">W</span>, you, thomas_bayes)) ; true ).
-</code></pre><p>However, as you noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
-We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>consistent(W)</code>.</p>
+</code></pre><p>However, as you may have noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
+We simply drop the probabilities and treat the DNA match as a hard fact. Therefore, Prolog will respond with <code>W = nathaniel_bayes</code> for the query <code>consistent(W)</code>.</p>
 <h2>Attempt 2: Pyro</h2>
 <p>In Pyro, we instead define a probabilistic model, a guide, and an inference procedure.</p>
 <h3>The generative model</h3>
 <p>Here we simply model the generative process by sampling that Nathaniel is William&#39;s father with 60% probability.
 We then say the probability of a match depends on whether Nathaniel is the father (<code>torch.where</code>), using the sampled fact to select this probability.
-Finally, we provide our observation that there was in fact a DNA-match observed using <code>pyro.sample</code> with <code>obs=...</code>.
+Finally, we provide our observation that there was in fact a DNA match observed using <code>pyro.sample</code> with <code>obs=...</code>.
 Calling <code>model()</code> will result in one sample from the model.</p>
 <div class="code-fold"><details><summary>6 import lines</summary><pre><code class="hljs language-python"><span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">import</span> pyro
@@ -168,12 +168,11 @@ In <a href="../posts/pyro/02-svi.html">the next part</a> we look at why we need 
           <div class="post-author-text">
             <span><a href="../index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup></span>
             <span class="post-author-aff"><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University</span>
-            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT, HSLU</span>
+            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT (HSLU)</span>
           </div>
         </aside>
         <footer class="ai-statement">
-<p><em><p style="text-align: center;"><em>AI statement</em></em> </p>
-<p>Content and code were written by myself. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p></p>
+<p style="text-align: center;"><strong>AI statement</strong></p><p>Content and code were written by me. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p>
         </footer>
       </article>
     </div>

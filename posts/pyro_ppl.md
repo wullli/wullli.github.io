@@ -8,10 +8,10 @@ draft: true
 
 ## Why a language for probabilities?
 
-Initially the term "probabilistic programming" sounds vague, at least that was my experience.
-Why do we need a programming language for probabilities, can we not just do this in standard 
+Initially the term "probabilistic programming" sounds vague. At least, that was my experience.
+Why do we need a programming language for probabilities? Can we not just do this in standard 
 languages already? It only started to make sense when I thought 
-about it as a declarative language (think Prolog), that lets you specify probabilistic processes and models
+about it as a declarative language (think Prolog), which lets you specify probabilistic processes and models
 and allows you to perform inference and optimization automatically. 
 
 In essence, it just gives you the 
@@ -20,11 +20,11 @@ such that you can run arbitrary probabilistic models. In Prolog, we would define
 Likewise, when running a query in Prolog, the engine performs backtracking automatically (thus inferring the solution). The equivalent in Pyro is the inference via e.g., stochastic variational inference (SVI). 
 
 Writing this series of posts was my way of learning the fundamentals of Pyro,
-by documenting my understanding along the process and coming up with examples for myself.
+by documenting my understanding along the way and coming up with examples for myself.
 
 ## A running example: are you related to Thomas Bayes?
 
-Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes' brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let’s assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.
+Consider the following example (fictional): You want to infer whether you share a common ancestor with Thomas Bayes. However, you are unsure if your father (William Bayes) is descended from one of Thomas Bayes' brothers, or from another Bayes family. Still, you have estimates for how likely the relationship is: Let's assume Nathaniel was one of only two men named Bayes of fathering age in the area where William grew up, the other belonging to an unrelated Bayes family. Refer to Figure (a) below for an overview.
 
 ![Fictional family tree linking you to Thomas Bayes](images/bayes_family_tree.svg)
 
@@ -58,8 +58,8 @@ observed(dna_match).
 consistent(W) :- world(W), ( observed(dna_match) -> once(related(W, you, thomas_bayes)) ; true ).
 ```
 
-However, as you noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
-We simply drop the probabilities and treat the DNA match as a hard fact, therefore Prolog will respond with `W = nathaniel_bayes` for the query `consistent(W)`.
+However, as you may have noticed, in plain Prolog, we cannot infer how probable each scenario is exactly, since we can only work with facts. 
+We simply drop the probabilities and treat the DNA match as a hard fact. Therefore, Prolog will respond with `W = nathaniel_bayes` for the query `consistent(W)`.
 
 ## Attempt 2: Pyro
 
@@ -69,7 +69,7 @@ In Pyro, we instead define a probabilistic model, a guide, and an inference proc
 
 Here we simply model the generative process by sampling that Nathaniel is William's father with 60% probability.
 We then say the probability of a match depends on whether Nathaniel is the father (`torch.where`), using the sampled fact to select this probability.
-Finally, we provide our observation that there was in fact a DNA-match observed using `pyro.sample` with `obs=...`.
+Finally, we provide our observation that there was in fact a DNA match observed using `pyro.sample` with `obs=...`.
 Calling `model()` will result in one sample from the model.
 
 ```python fold-imports

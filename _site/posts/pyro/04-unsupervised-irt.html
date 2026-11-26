@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unsupervised Item-Response Models with Pyro · Probabilistic Programming with Pyro &mdash; Pascal Wullschleger</title>
-  <meta name="description" content="This article describes the basic implementation process of unsupervised item-response theory (IRT) models for label inference.">
+  <title>Unsupervised Item Response Models with Pyro · Probabilistic Programming with Pyro &mdash; Pascal Wullschleger</title>
+  <meta name="description" content="This article describes the basic implementation process of unsupervised item response theory (IRT) models for label inference.">
   <meta name="author" content="Pascal Wullschleger">
   <link rel="canonical" href="https://wullli.github.io/posts/pyro/04-unsupervised-irt.html">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Unsupervised Item-Response Models with Pyro · Probabilistic Programming with Pyro">
-  <meta property="og:description" content="This article describes the basic implementation process of unsupervised item-response theory (IRT) models for label inference.">
+  <meta property="og:title" content="Unsupervised Item Response Models with Pyro · Probabilistic Programming with Pyro">
+  <meta property="og:description" content="This article describes the basic implementation process of unsupervised item response theory (IRT) models for label inference.">
   <meta property="og:url" content="https://wullli.github.io/posts/pyro/04-unsupervised-irt.html">
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
   <meta property="article:tag" content="pyro">
   <meta property="article:tag" content="item response theory">
   <meta property="article:tag" content="unsupervised learning">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Unsupervised Item-Response Models with Pyro · Probabilistic Programming with Pyro","description":"This article describes the basic implementation process of unsupervised item-response theory (IRT) models for label inference.","url":"https://wullli.github.io/posts/pyro/04-unsupervised-irt.html","mainEntityOfPage":"https://wullli.github.io/posts/pyro/04-unsupervised-irt.html","datePublished":"2026-10-13","dateModified":"2026-10-13","author":{"@type":"Person","name":"Pascal Wullschleger","url":"https://wullli.github.io/"},"keywords":"pyro, item response theory, unsupervised learning","inLanguage":"en","isPartOf":{"@type":"Blog","name":"Probabilistic Programming with Pyro","url":"https://wullli.github.io/posts/pyro.html"},"position":4}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Unsupervised Item Response Models with Pyro · Probabilistic Programming with Pyro","description":"This article describes the basic implementation process of unsupervised item response theory (IRT) models for label inference.","url":"https://wullli.github.io/posts/pyro/04-unsupervised-irt.html","mainEntityOfPage":"https://wullli.github.io/posts/pyro/04-unsupervised-irt.html","datePublished":"2026-10-13","dateModified":"2026-10-13","author":{"@type":"Person","name":"Pascal Wullschleger","url":"https://wullli.github.io/"},"keywords":"pyro, item response theory, unsupervised learning","inLanguage":"en","isPartOf":{"@type":"Blog","name":"Probabilistic Programming with Pyro","url":"https://wullli.github.io/posts/pyro.html"},"position":4}</script>
   <meta name="robots" content="noindex">
 </head>
 <body>
@@ -64,7 +64,7 @@
       <article class="post">
         <p class="post-back"><a href="../../blog.html">&larr; All posts</a></p>
         <p class="series-kicker"><a href="../../posts/pyro.html">Probabilistic Programming with Pyro</a> &middot; Part 4 of 4</p>
-        <h1>Unsupervised Item-Response Models with Pyro <span class="draft-badge">Draft</span></h1>
+        <h1>Unsupervised Item Response Models with Pyro <span class="draft-badge">Draft</span></h1>
         <time class="post-date" datetime="2026-10-13">13 October 2026</time>
         <div class="blog-tags"><span class="blog-tag">pyro</span><span class="blog-tag">item response theory</span><span class="blog-tag">unsupervised learning</span></div>
         <details class="series-box">
@@ -80,7 +80,7 @@
     <a href="../../posts/pyro/03-bnn-in-pyro.html">Pyro Fundamentals</a> <span class="draft-badge">Draft</span>
   </li>
   <li class="current">
-    <a href="../../posts/pyro/04-unsupervised-irt.html" aria-current="page">Unsupervised Item-Response Models with Pyro</a> <span class="draft-badge">Draft</span>
+    <a href="../../posts/pyro/04-unsupervised-irt.html" aria-current="page">Unsupervised Item Response Models with Pyro</a> <span class="draft-badge">Draft</span>
   </li>
 </ol>
           <p class="series-all"><a href="../../posts/pyro/all.html">Read the whole series on one page</a></p>
@@ -92,12 +92,11 @@
           <div class="post-author-text">
             <span><a href="../../index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup></span>
             <span class="post-author-aff"><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University</span>
-            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT, HSLU</span>
+            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT (HSLU)</span>
           </div>
         </aside>
         <footer class="ai-statement">
-<p><em><p style="text-align: center;"><em>AI statement</em></em> </p>
-<p>Content and code were written by myself. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p></p>
+<p style="text-align: center;"><strong>AI statement</strong></p><p>Content and code were written by me. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p>
         </footer>
         <nav class="series-nav" aria-label="Chapter navigation">
   <a class="prev" href="../../posts/pyro/03-bnn-in-pyro.html"><span class="series-nav-label">&larr; Previous</span>Pyro Fundamentals</a>

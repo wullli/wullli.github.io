@@ -81,7 +81,7 @@
     <a href="../../posts/pyro/03-bnn-in-pyro.html" aria-current="page">Pyro Fundamentals</a> <span class="draft-badge">Draft</span>
   </li>
   <li>
-    <a href="../../posts/pyro/04-unsupervised-irt.html">Unsupervised Item-Response Models with Pyro</a> <span class="draft-badge">Draft</span>
+    <a href="../../posts/pyro/04-unsupervised-irt.html">Unsupervised Item Response Models with Pyro</a> <span class="draft-badge">Draft</span>
   </li>
 </ol>
           <p class="series-all"><a href="../../posts/pyro/all.html">Read the whole series on one page</a></p>
@@ -132,14 +132,14 @@ OUT_DIM = <span class="hljs-number">1</span>
 </code></pre><p>What initially might be confusing is the <code>pyro.sample</code> here. The <code>expand</code> function here is necessary,
 since the prior is univariate and would return just one dimension when sampling. However, 
 we want our weights to be a matrix, where each element is drawn independently from this prior.
-The <code>expand</code> just allows us to add batch dimensions for the sampling. The <code>to_event(2)</code> denotes, that we
+The <code>expand</code> just allows us to add batch dimensions for the sampling. The <code>to_event(2)</code> denotes that we
 will treat the sampled weight matrix as a single random variable subsequently (joint), with the 
 argument indicating how many of the dimensions should be considered event instead of batch dimensions.</p>
-<p>Subsequently the logits are calculated using the sampled parameters and a output is sampled using
-a Bernoulli distribution with the logits as its parameters. If an observation is given, the outputs 
+<p>Subsequently, the logits are calculated using the sampled parameters and an output is sampled using
+a Bernoulli distribution with the logits as its parameter. If an observation is given, the outputs 
 are not actually sampled and the <code>pyro.sample(&quot;y&quot;, dist.Bernoulli(logits=logits), obs=y)</code>
-will simply return the observation <code>y</code>. However, in the latter case, the statement will have the effect of marking this node
-in the underlying bayesian network Pyro generates as observed and calculating how likely the observation is given
+will simply return the observation <code>y</code>. However, in that case, the statement will have the effect of marking this node
+in the underlying Bayesian network Pyro generates as observed and calculating how likely the observation is given
 our current distribution (Bernoulli of the logits). This score is saved in the background and it corresponds to the likelihood of the evidence lower bound (ELBO)
 as previously introduced ($$$$).</p>
 <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>ELBO</mtext><mo>=</mo><munder><munder><mrow><msub><mi mathvariant="double-struck">E</mi><mrow><mi mathvariant="bold">Θ</mi><mo>∼</mo><mi>q</mi></mrow></msub><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">[</mo><mi>log</mi><mo>⁡</mo><mi>p</mi><mo stretchy="false">(</mo><mi mathvariant="bold">x</mi><mo>∣</mo><mi mathvariant="bold">Θ</mi><mo stretchy="false">)</mo><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">]</mo></mrow><mo stretchy="true">⏟</mo></munder><mtext>reconstruction / data fit</mtext></munder><mo>−</mo><munder><munder><mrow><msub><mi>D</mi><mtext>KL</mtext></msub><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">(</mo><mi>q</mi><mo stretchy="false">(</mo><mi mathvariant="bold">Θ</mi><mo stretchy="false">)</mo><mo>∥</mo><mi>p</mi><mo stretchy="false">(</mo><mi mathvariant="bold">Θ</mi><mo stretchy="false">)</mo><mo fence="false" stretchy="true" minsize="1.2em" maxsize="1.2em">)</mo></mrow><mo stretchy="true">⏟</mo></munder><mtext>regularization</mtext></munder></mrow><annotation encoding="application/x-tex">\text{ELBO} = \underbrace{\mathbb{E}_{\boldsymbol{\Theta} \sim q}\big[\log p(\mathbf{x} \mid \boldsymbol{\Theta})\big]}_{\text{reconstruction / data fit}} - \underbrace{D_\text{KL}\big(q(\boldsymbol{\Theta}) \parallel p(\boldsymbol{\Theta})\big)}_{\text{regularization}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">ELBO</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.748em;vertical-align:-1.898em;"></span><span class="minner munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-1.277em;"><span class="pstrut" style="height:3em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">reconstruction / data fit</span></span></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="minner munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span class="svg-align" style="top:-2.002em;"><span class="pstrut" style="height:3em;"></span><span class="katex-stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="0.548em" viewBox="0 0 400000 548" preserveAspectRatio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
@@ -313,16 +313,15 @@ OUT_DIM = <span class="hljs-number">1</span>
           <div class="post-author-text">
             <span><a href="../../index.html" class="post-author-name"><strong>Pascal</strong> Wullschleger</a><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a>,<a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup></span>
             <span class="post-author-aff"><sup><a href="https://www.maynoothuniversity.ie/hamilton" target="_blank" rel="noopener">1</a></sup> Hamilton Institute, Maynooth University</span>
-            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT, HSLU</span>
+            <span class="post-author-aff"><sup><a href="https://www.hslu.ch/en/lucerne-school-of-information-technology/" target="_blank" rel="noopener">2</a></sup> Applied AI Lab, Lucerne School of IT (HSLU)</span>
           </div>
         </aside>
         <footer class="ai-statement">
-<p><em><p style="text-align: center;"><em>AI statement</em></em> </p>
-<p>Content and code were written by myself. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p></p>
+<p style="text-align: center;"><strong>AI statement</strong></p><p>Content and code were written by me. Claude Code with Opus 5.5 was used for the following: Creating TikZ figures, reviewing and challenging ideas for examples.</p>
         </footer>
         <nav class="series-nav" aria-label="Chapter navigation">
   <a class="prev" href="../../posts/pyro/02-svi.html"><span class="series-nav-label">&larr; Previous</span>Variational Inference</a>
-  <a class="next" href="../../posts/pyro/04-unsupervised-irt.html"><span class="series-nav-label">Next &rarr;</span>Unsupervised Item-Response Models with Pyro</a>
+  <a class="next" href="../../posts/pyro/04-unsupervised-irt.html"><span class="series-nav-label">Next &rarr;</span>Unsupervised Item Response Models with Pyro</a>
         </nav>
       </article>
     </div>

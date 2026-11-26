@@ -26,3 +26,10 @@ Figures are TikZ: `images/tikz/<name>.tex` (a `standalone` document that `\input
 `![Alt](images/<name>.svg)`. Needs `latex` and `dvisvgm` (TeX Live). SVGs are cached in
 `.tikz-cache/` by content hash, so only changed figures re-render. Files starting with `_`
 are shared includes, not figures.
+
+## Citations on the About page
+
+Cite a publication in `index.html` with its BibTeX key:
+`<a class="cite-ref" data-cite="bibkey"></a>`. The build fills in its number from
+`publications.bib` (the same order as the Publications page) and links it to the entry there.
+An unknown key stops the build.
